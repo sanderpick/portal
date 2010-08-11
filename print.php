@@ -1,9 +1,11 @@
 <?php
-## live
-//$EINSTEIN_LOC = "../tools/einstein/";
-## local
-$EINSTEIN_LOC = "../estimator/";
-## universal
+#——————————————————————————————–—————————————————————–––––––––– HOST
+$host = gethostbyaddr(gethostbyname($_SERVER["SERVER_NAME"]));
+preg_match('/\.([a-z,A-Z]{2,6})$/',$host,$tld);
+switch($tld[1]) {
+	case "ld" : $EINSTEIN_LOC = "../estimator/"; break; // local
+	default : $EINSTEIN_LOC = "../einstein.cleanenergysolutionsinc.com/"; break;
+}
 $LHS_LOC = "http://lighthousesolar.com";
 #——————————————————————————————–—————————————————————– BEGIN SESSION
 require_once($EINSTEIN_LOC."includes/es-manager.class.php");
