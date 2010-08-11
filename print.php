@@ -4,7 +4,7 @@ $host = gethostbyaddr(gethostbyname($_SERVER["SERVER_NAME"]));
 preg_match('/\.([a-z,A-Z]{2,6})$/',$host,$tld);
 switch($tld[1]) {
 	case "ld" : $EINSTEIN_LOC = "../estimator/"; break; // local
-	default : $EINSTEIN_LOC = "../tools/einstein/"; break;
+	default : $EINSTEIN_LOC = "../einstein.cleanenergysolutionsinc.com/"; break;
 }
 $LHS_LOC = "http://lighthousesolar.com";
 #——————————————————————————————–—————————————————————– BEGIN SESSION
