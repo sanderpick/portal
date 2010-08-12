@@ -188,7 +188,7 @@ else {
 			if($zone->zon_connection_price>0) $connections_desc = "Mounting Materials";
 			// build the layout text
 			if($m->getRow("es_uploads",$zone->zon_layout)) {
-				$i_url = $EINSTEIN_LOC.$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
+				$i_url = "http://einstein.cleanenergysolutionsinc.com/".$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
 				$layout_html .= "<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span><br /><img src='".$i_url."' width='650' style='padding-top:10px;' alt='Zone Layout' /><br /><br />";
 			}
 			// get the tilt
