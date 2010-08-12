@@ -3,8 +3,14 @@
 $host = gethostbyaddr(gethostbyname($_SERVER["SERVER_NAME"]));
 preg_match('/\.([a-z,A-Z]{2,6})$/',$host,$tld);
 switch($tld[1]) {
-	case "ld" : $EINSTEIN_LOC = "../estimator/"; break; // local
-	default : $EINSTEIN_LOC = "../einstein.cleanenergysolutionsinc.com/"; break;
+	case "ld" : // local 
+		$EINSTEIN_LOC = "../estimator/";
+		$EINSTEIN_URI = $EINSTEIN_LOC;
+		break;
+	default : 
+		$EINSTEIN_LOC = "../einstein.cleanenergysolutionsinc.com/"; 
+		$EINSTEIN_URI = "http://einstein.cleanenergysolutionsinc.com/";
+		break;
 }
 $LHS_LOC = "http://lighthousesolar.com";
 $BINDER_LOC = "http://tools.lighthousesolar.com/files/pdf/Lighthousesolar_Sales_Web.pdf";
@@ -188,7 +194,7 @@ else {
 			if($zone->zon_connection_price>0) $connections_desc = "Mounting Materials";
 			// build the layout text
 			if($m->getRow("es_uploads",$zone->zon_layout)) {
-				$i_url = "http://einstein.cleanenergysolutionsinc.com/".$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
+				$i_url = $EINSTEIN_URI.$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
 				$layout_html .= "<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span><br /><img src='".$i_url."' width='650' style='padding-top:10px;' alt='Zone Layout' /><br /><br />";
 			}
 			// get the tilt
