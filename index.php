@@ -1,6 +1,6 @@
 <?php
 #——————————————————————————————–—————————————————————–––––––––– HOST
-$host = gethostbyaddr(gethostbyname($_SERVER["SERVER_NAME"]));
+$host = $_SERVER["SERVER_NAME"];
 preg_match('/\.([a-z,A-Z]{2,6})$/',$host,$tld);
 switch($tld[1]) {
 	case "ld" : // local 
@@ -578,7 +578,7 @@ else {
 			// main tabs
 			$("#menu").tabs({ selected:1 });
 			// dialog box
-			var pro_valid = <?php echo $pro->pro_delivered; ?>;
+			var pro_valid = <?php echo $pro->pro_published; ?>;
 			$("#check-out-window").dialog({
 				autoOpen:false,
 				width:710,
