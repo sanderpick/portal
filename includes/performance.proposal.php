@@ -126,7 +126,8 @@
 	</table>
 	<br /><br />
 	<div class="vis vis-area performance-graphs">
-		<?php if($draw_bill)  { echo "<span class='caption'>Estimated System Output Analysis*:</span><br /><br />"; ?>
+		<span class='caption'>Estimated System Output Analysis*:</span>
+		<?php if($draw_bill) echo "<br /><br />"; ?>
 		<table>
 			<caption>– Electricity Usage Comparison (estimate) –</caption>
 			<thead>
@@ -179,11 +180,10 @@
 				</tr>
 			</tbody>
 		</table>
-		<br /><br />
-		<?php } ?>
 	</div>
 	<div class="vis vis-bar-performance performance-graphs">
 		<table>
+			<br />
 			<caption>– Available Energy Value –</caption>
 			<thead>
 				<tr>

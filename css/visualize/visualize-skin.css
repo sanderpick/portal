@@ -1,44 +1,58 @@
 /*visualize extension styles*/
-#visualize-area table, #visualize-bar table, #visualize-line table { display:none; }
+.vis table { display:none; }
 
-#visualize-area .visualize { padding: 50px 30px 100px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
-#visualize-area .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
-#visualize-area .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
-#visualize-area .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
-#visualize-area .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
-#visualize-area .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
-#visualize-area .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
-#visualize-area .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
-#visualize-area .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
-#visualize-area .visualize ul.visualize-key li { font-size:12px;  margin-left: 25px; padding-left: 18px; }
-#visualize-area .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -6px; }
-#visualize-area .visualize ul.visualize-key .visualize-key-label { color: #333;  }
-#visualize-area .visualize .visualize-x-title { position: absolute; bottom: 60px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }
+.vis-area .visualize { padding: 50px 30px 100px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
+.vis-area .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
+.vis-area .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
+.vis-area .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
+.vis-area .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
+.vis-area .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
+.vis-area .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
+.vis-area .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
+.vis-area .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
+.vis-area .visualize ul.visualize-key li { font-size:12px;  margin-left: 25px; padding-left: 18px; }
+.vis-area .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -6px; }
+.vis-area .visualize ul.visualize-key .visualize-key-label { color: #333;  }
+.vis-area .visualize .visualize-x-title { position: absolute; bottom: 60px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }
 
-#visualize-bar .visualize { padding: 50px 30px 55px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
-#visualize-bar .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
-#visualize-bar .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
-#visualize-bar .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
-#visualize-bar .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
-#visualize-bar .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
-#visualize-bar .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
-#visualize-bar .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
-#visualize-bar .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
-#visualize-bar .visualize ul.visualize-key li { font-size:10px;  margin-left: 20px; padding-left: 18px; }
-#visualize-bar .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -5px; }
-#visualize-bar .visualize ul.visualize-key .visualize-key-label { color: #333;  }
-#visualize-bar .visualize .visualize-x-title { position: absolute; bottom: 10px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }
+.vis-bar-performance .visualize { padding: 50px 30px 55px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
+.vis-bar-performance .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
+.vis-bar-performance .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
+.vis-bar-performance .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
+.vis-bar-performance .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
+.vis-bar-performance .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
+.vis-bar-performance .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
+.vis-bar-performance .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
+.vis-bar-performance .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
+.vis-bar-performance .visualize ul.visualize-key li { font-size:10px;  margin-left: 20px; padding-left: 18px; }
+.vis-bar-performance .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -5px; }
+.vis-bar-performance .visualize ul.visualize-key .visualize-key-label { color: #333;  }
+.vis-bar-performance .visualize .visualize-x-title { position: absolute; bottom: 10px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }
 
-#visualize-line .visualize { padding: 50px 30px 100px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
-#visualize-line .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
-#visualize-line .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
-#visualize-line .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
-#visualize-line .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
-#visualize-line .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
-#visualize-line .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
-#visualize-line .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
-#visualize-line .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
-#visualize-line .visualize ul.visualize-key li { font-size:12px;  margin-left: 25px; padding-left: 18px; }
-#visualize-line .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -5px; }
-#visualize-line .visualize ul.visualize-key .visualize-key-label { color: #333;  }
-#visualize-line .visualize .visualize-x-title { position: absolute; bottom: 60px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }
+.vis-bar-financial .visualize { padding: 50px 30px 95px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
+.vis-bar-financial .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
+.vis-bar-financial .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
+.vis-bar-financial .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
+.vis-bar-financial .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
+.vis-bar-financial .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
+.vis-bar-financial .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
+.vis-bar-financial .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
+.vis-bar-financial .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
+.vis-bar-financial .visualize ul.visualize-key li { font-size:10px;  margin-left: 20px; padding-left: 18px; }
+.vis-bar-financial .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -5px; }
+.vis-bar-financial .visualize ul.visualize-key .visualize-key-label { color: #333;  }
+.vis-bar-financial .visualize .visualize-x-title { position: absolute; bottom: 50px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }
+
+.vis-line .visualize { padding: 50px 30px 100px 60px; background: #eee; border:none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
+.vis-line .visualize canvas { border: 1px solid #ddd; margin: -1px; background: #fff; }
+.vis-line .visualize-labels-x, .visualize-labels-y { top: 50px; left: 60px; z-index: 100; }
+.vis-line .visualize-pie .visualize-labels { position: absolute; top: 50px; left: 60px; }
+.vis-line .visualize-labels-x li span.label, .visualize-labels-y li span.label { color: #666; font-size: 9px; padding-right: 5px; }
+.vis-line .visualize-labels-y li span.line { border-style: dotted;  opacity: 0.6; }
+.vis-line .visualize .visualize-info { border: 0; position: static;  opacity: 1; background: none; }
+.vis-line .visualize .visualize-title { position: absolute; top: 20px; color: #666; margin-bottom: 0; left: 0; text-align:center; font-size:14px; font-weight: bold; width:100%; }
+.vis-line .visualize ul.visualize-key { position: absolute; bottom: 10px; background: #ddd; z-index: 10; padding: 10px 0; color: #333; width: 100%; left: 0;  }
+.vis-line .visualize ul.visualize-key li { font-size:12px;  margin-left: 25px; padding-left: 18px; }
+.vis-line .visualize ul.visualize-key .visualize-key-color { width: 10px; height: 10px;  margin-top: -5px; }
+.vis-line .visualize ul.visualize-key .visualize-key-label { color: #333;  }
+.vis-line .visualize .visualize-x-title { position: absolute; bottom: 60px; color: #333; margin-bottom: 0; left: 0; text-align:center; font-size:11px; width:100%; }

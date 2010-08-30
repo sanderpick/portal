@@ -1,16 +1,28 @@
-/*setup*/  
-html, body, div, h1, h3, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p, blockquote, pre, form, input, fieldset, legend, label, textarea, table, th, td { margin:0; padding:0; }
-* { outline:none; }
+/* MYLIGHTHOUSESOLAR.com Printer */
+/*––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– resets */
+
+html{color:#000;background:#FFF;}*{outline:none;}*,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{outline:none;border:0;}address,caption,cite,code,dfn,em,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym {border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}legend{color:#000;}header,footer,section,aside,nav,article{display:block;}
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+
 body { background:white; color:black; font-family:'Helvetica Neue', Arial, sans-serif; font-size:10pt; }
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+
 a { color:#222222; }
 a:hover {  }
 a:active { outline:none; }
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+
 h1.page-head { font-size:10pt; color:black; font-weight:normal; text-transform:uppercase; }
+#prop-overview p { line-height:14pt; width:650px; }
 img { outline:none; border:0; }
 table { width:650px; }
 caption { padding:0 0 10pt 0; text-align:left; text-transform:uppercase; font-size:10pt; font-weight:bold; color:#aaa; }
 .caption { padding:0 0 10pt 0; text-align:left; text-transform:uppercase; font-size:10pt; font-weight:bold; color:#aaa; }
 th { font-size:8pt; color:#666; font-weight:normal; border-bottom:1px solid #ccc; padding-bottom:2pt; }
+#financials-table td { font-size:7pt !important; padding:1pt 5pt !important; }
 td { padding:4pt 5pt 2pt 5pt; font-size:9pt; }
 th.cell-indent { padding:0 0 0 10pt; }
 th.cell-narrow { padding:0 10pt 0 0; font-size:8pt; color:#666; font-weight:normal; border-bottom:1px solid #ccc; }
@@ -28,7 +40,9 @@ td div.cell-round p {
 	position:relative; top:110px; width:160px; padding:10px; text-align:center; font-weight:normal; font-size:14pt; 
 	background:rgba(255,255,255,0.8); color:#5880c0; text-transform:uppercase;
 };
-/*general*/
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+
 .clear { clear:both; }
 .left { float:left; }
 .right { float:right; }
@@ -52,7 +66,9 @@ td div.cell-round p {
 	border:none; border-radius:10px; -moz-border-radius:10px; -khtml-border-radius:10px; -webkit-border-radius:10px;
 }
 .overview-pics > img { margin:0 0 10pt 0; }
-/*content*/
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+
 #wrap { padding:20pt; }
 #proposal-content {  }
 #proposal-content > .page { }
@@ -63,3 +79,5 @@ td div.cell-round p {
    font-size:90%;
 }
 .fake-break { margin:100px 0 100px 0; border-top:1px dashed #aaa; width:662px; }
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
