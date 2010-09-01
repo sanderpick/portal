@@ -55,7 +55,7 @@ th.cell-narrow { padding:0 10px 0 0; font-size:11px; color:#666; font-weight:nor
 
 td { padding:5px 5px 0 5px; }
 td.cell-indent { padding:5px 0 0 10px; }
-td.cell-credit { color:red; }
+td.cell-credit { color:red;padding-left:25px; }
 td.cell-total { font-weight:bold; }
 td.cell-rebate { color:green; font-weight:bold; }
 td.cell-foot { padding:10px 0 0 0; line-height:12px; font-size:10px; color:#666; }

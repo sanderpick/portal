@@ -341,6 +341,7 @@ if($pro->pro_inspection!=0) {
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Design / Inspection / Commissioning Fees</td><td align='right'>".number_format($pro->pro_inspection)."</td></tr>";
 	$c++;
 }
+/*
 for($i=0;$i<count($rebate_descs);$i++) {
 	if($rebate_prices[$i]!=0) {
 		if($rebate_descs[$i]=="") $rebate_descs[$i] = "Rebate";
@@ -348,6 +349,8 @@ for($i=0;$i<count($rebate_descs);$i++) {
 		$c++;
 	}
 }
+*/
+
 if($pro->pro_discount!=0) {
 	if($pro->pro_discount_desc!="") $pro->pro_discount_desc = "(".$pro->pro_discount_desc.")";
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-credit'>Discount ".$pro->pro_discount_desc."</td><td class='cell-credit' align='right'>-".number_format($pro->pro_discount)."</td></tr>";
@@ -358,11 +361,22 @@ $c++;
 $fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Sales Tax</td><td align='right'>".$f->tax."</td></tr>";
 $c++;
 $fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-rebate cell-emphasis'>Total System Out of Pocket Cost (@ $".$f->ppw_cus_net." / Watt)</td><td class='cell-rebate cell-emphasis' align='right'>$".$f->cus_price."</td></tr>";
+$c++;
+
+//@mcn - Moved rebates below "Total System Out of Pocket Cost" per Tom's request.
+for($i=0;$i<count($rebate_descs);$i++) {
+        if($rebate_prices[$i]!=0) {
+		if($rebate_descs[$i]=="") $rebate_descs[$i] = "Rebate";
+		$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-credit'>".$rebate_descs[$i]." (".$rebate_types[$i].")</td><td class='cell-credit' align='right'>-".number_format($rebate_prices[$i])."</td></tr>";
+           	$c++;
+        }
+}
+
 // show tax credit info?
 $use_credit = $f->credit!=0 ? TRUE : FALSE;
 if($use_credit) {
-	$c = 0;
-	$fees_html .= "<tr><td colspan='2'>&nbsp;</td></tr>";
+	$c = 1;
+	//$fees_html .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-credit'>30% Federal Tax Credit</td><td class='cell-credit' align='right'>-".$f->credit."</td></tr>";
 	$c++;
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-total'>Final Cost To You*</td><td class='cell-total' align='right'>$".$f->cus_after_credit."</td></tr>";
