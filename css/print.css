@@ -80,7 +80,7 @@ td div.cell-round p {
 .page a { }
 .page a:hover { text-decoration:none; font-style:italic; }
 
-.layout-img { border-top:1px solid #ccc; border-bottom:5px solid rgb(201,210,231); border-radius:0 0 5px 5px; -moz-border-radius:0 0 5px 5px; -khtml-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; }
+.layout-img { border-top:1px solid #ccc; }
 
 .prop-section {  }
 
