@@ -1,48 +1,102 @@
 <!-- proposal system START -->
 <div id="prop-system" class="prop-section">
+	<div class="system-graphs">
+		<span class="caption">Cost Breakdown:</span>
+		<div class="pie-back">
+			<div style="width:50%; float:left; padding:0 0 0 60px;">
+				<div class="vis vis-pie">
+					<table>
+						<caption>Cost Breakdown:</caption>
+						<thead>
+							<tr>
+								<td></td>
+								<th>$</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>Labor</th>
+								<td><?php echo $f->install_labor_nf; ?></td>
+							</tr>
+							<tr>
+								<th>Taxes &amp; Fees</th>
+								<td><?php echo $f->tax_nf + $f->fees_total; ?></td>
+							</tr>
+							<tr>
+								<th>Materials</th>
+								<td><?php echo $f->comp_total; ?></td>
+							</tr>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div style="margin:0 0 0 50%; width:50%; padding:0 0 0 60px;">
+				<div class="vis vis-pie">
+					<table>
+						<caption>Cost Breakdown:</caption>
+						<thead>
+							<tr>
+								<td></td>
+								<th>$</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if($use_credit) { ?>
+							<tr>
+								<th>Your Cost</th>
+								<td><?php echo $f->cus_after_credit_nf; ?></td>
+							</tr>
+							<tr>
+								<th>30% Federal Tax Credit</th>
+								<td><?php echo $f->credit_nf; ?></td>
+							</tr>
+							<?php } else { ?>	
+							<tr>
+								<th>Your Cost</th>
+								<td><?php echo $f->cus_price_nf; ?></td>
+							</tr>
+							<?php } ?>
+							<tr>
+								<th>Rebates &amp; Discounts</th>
+								<td><?php echo $f->credits_total; ?></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<br /><br />
+	</div>
 	<table>
 		<caption>Materials Detail:</caption>
-		<thead>
-			<tr>
-				<th align="left">qty.</th>
-				<th class="cell-indent" align="left">component</th>
-				<th align="right">price ($)</th>
-			</tr>
-		</thead>
-		<tbody>
+		<tbody class="tabled">
 			<?php echo $components_html; ?>
 		</tbody>
 	</table>
 	<br /><br />
 	<table>
 		<caption>Labor Detail:</caption>
-		<thead>
-			<tr>
-				<th align="left">description</th>
-				<th align="right">price ($)</th>
-			</tr>
-		</thead>
-		<tbody>
+		<tbody class="tabled">
 			<?php echo $labor_html; ?>
 		</tbody>
 	</table>
 	<br /><br />
 	<table>
-		<caption>Credits and Fees:</caption>
-		<thead>
-			<tr>
-				<th align="left">item</th>
-				<th align="right">price ($)</th>
-			</tr>
-		</thead>
-		<tbody>
+		<caption>Credits and Fees Detail:</caption>
+		<tbody class="tabled">
 			<?php echo $fees_html; ?>
 		</tbody>
+	</table>
+	<?php if($use_credit) { ?>
+	<br />
+	<table>
 		<tfoot>
 			<tr>
-				<td class="cell-foot" colspan="3">* This figure represents your <em>estimated</em> final cost after the 30% Federal Tax Credit. Please consult with a tax professional when claiming.</td>
+				<td class="cell-foot" colspan="2">* Please consult with a tax professional when claiming.</td>
 			</tr>
 		</tfoot>
 	</table>
+	<?php } ?>
 </div>
 <!-- proposal system END -->

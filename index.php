@@ -155,22 +155,31 @@ if($pro_key) {
 				// visualize tables
 				$(".vis table").each(function(i) {
 					var type, colors, key, post, pre;
-					switch(i) {
-						case 0 : type = "area"; colors = ["#5880c0","#b1cd49"]; key = true; pre = ""; post = " kWh";
-							if(draw_bill) $(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
+					switch(i) { // ["#9faed3","#5880c0","#c9d1e6"]
+						case 0 : type = "pie"; colors = ["#333333","#808080","#b1cd49"]; key = true;
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"200px",height:"200px" });
 							break;
-						case 1 : type = "bar"; colors = ["#5880c0"]; key = false; pre = "$"; post = "";
-							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
+						case 1 : type = "pie"; colors = ["#333333","#ccde89","#b1cd49"]; key = true;
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"200px",height:"200px" });
 							break;
-						case 2 : type = "bar"; colors = ["#eae854"]; key = false; pre = ""; post = "";
-							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",yLabelPre:pre,yLabelPost:post,xTitle:"– kWh/m<span class='super'>2</span>/day over First Year –" });
+						case 2 : type = "pie"; colors = ["#333333","#b1cd49"]; key = true;
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"130px",height:"130px" });
 							break;
-						case 3 : type = "bar"; colors = ["#5880c0","#b1cd49"]; key = true; pre = "$"; post = "";
-							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
+						case 3 : type = "area"; colors = ["#333333","#b1cd49"]; key = true; pre = ""; post = " kWh";
+							if(draw_bill) $(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
 							break;
-						case 4 : type = "bar"; colors = ["#b1cd49"]; key = true; pre = "$"; post = "";
-							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
+						case 4 : type = "bar"; colors = ["#b1cd49"]; key = false; pre = "$"; post = "";
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
 							break;
+						case 5 : type = "bar"; colors = ["#eae854"]; key = false; pre = ""; post = "";
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",yLabelPre:pre,yLabelPost:post,xTitle:"– kWh/m<span class='super'>2</span>/day over First Year –" });
+							break;
+						case 6 : type = "bar"; colors = ["#333333","#b1cd49"]; key = true; pre = "$"; post = "";
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
+							break;
+						// case 7 : type = "bar"; colors = ["#b1cd49"]; key = true; pre = "$"; post = "";
+						// 	$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
+						// 	break;
 					}
 				});
 				// hide all sections
@@ -187,7 +196,8 @@ if($pro_key) {
 				// set initial proposal content
 				$("#prop-overview").fadeIn("slow");
 				// set inital proposal head
-				$("#proposal-head-text").html("<span style='font-weight:bold;'>"+job_name+"</span> Overview");
+				//$("#proposal-head-text").html("<span style='font-weight:bold;'>"+job_name+"</span> Overview");
+				$("#proposal-head-text").html("Overview");
 				// navigation
 				$(".list-item").click(function() {
 					// animate
@@ -197,7 +207,11 @@ if($pro_key) {
 					$(".prop-section").hide();
 					$("#"+this.title).fadeIn("slow");
 					// set head
-					$("#proposal-head-text").html("<span style='font-weight:bold;'>"+job_name+"</span> "+$(this).text());
+					//$("#proposal-head-text").html("<span style='font-weight:bold;'>"+job_name+"</span> "+$(this).text());
+					$("#proposal-head-text").html($(this).text());
+					// hide header if not overview
+					if(this.title!="prop-overview") $("#proposal-page-head").hide();
+					else $("#proposal-page-head").show();
 				});
 				// set up checkout
 				if(is_approved) {
@@ -348,7 +362,7 @@ if($pro_key) {
 								<tbody> \
 									<tr> \
 										<td style='padding:0;' colspan='2'> \
-											<?php echo $layout_html; ?> \
+											<?php if($is_pro) echo $layout_html; ?> \
 										</td> \
 									</tr> \
 									<tr> \
@@ -443,7 +457,7 @@ if($pro_key) {
 				<div id="binder-right">
 					<div id="binder-content">
 						<div id="binder-head">
-							<img src="gfx/tiny-logo.png" width="84" height="16" alt="small logo" />
+							<!-- <img src="gfx/tiny-logo.png" width="84" height="16" alt="small logo" /> -->
 							<h1 id="binder-head-text" class="page-head"></h1>
 						</div>
 						<div id="binder-page" class="page">
@@ -498,7 +512,8 @@ if($pro_key) {
 				<div id="proposal-right">
 					<div id="proposal-content">
 						<div id="proposal-head">
-							<img src="gfx/tiny-logo.png" width="84" height="16" alt="small logo" />
+							<h1 class="page-head" style="float:right;"><?php if($is_pro) echo "LHS Pr. #".$pro->ID; ?></h1>
+							<!-- <img src="gfx/tiny-logo.png" width="84" height="16" alt="small logo" /> -->
 							<h1 id="proposal-head-text" class="page-head"></h1>
 						</div>
 						<div id="proposal-page" class="page">
@@ -516,6 +531,7 @@ if($pro_key) {
 										require("includes/materials.proposal.php");
 									}
 								?>
+								<br /><br />
 							</div>
 						</div>
 					</div>

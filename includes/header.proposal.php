@@ -4,14 +4,14 @@
 		<tbody>
 			<tr>
 				<td style="padding:0;">
-					<p style="font-size:10px;">
-						<span style="font-size:14px;">PV Proposal #<?php echo $pro->ID; ?> prepared for:</span><br />
+					<p class="prop-header-txt">
+						<span class="prepared">PV Proposal #<?php echo $pro->ID; ?> Prepared for:</span><br />
 						<?php echo $job_html; ?>
 					</p>
 				</td>
 				<td style="padding:0; float:right;">
-					<p style="font-size:10px; text-align:right;">
-						<span style="font-size:14px;">prepared by:</span><br />
+					<p class="prop-header-txt" style="text-align:right;">
+						<span class="prepared">Prepared by:</span><br />
 						<?php echo $rep->rep_name_first." ".$rep->rep_name_last; ?><br />
 						<a href="mailto:<?php echo $rep->rep_email; ?>"><?php echo $rep->rep_email; ?></a> (e)<br />
 						<?php echo $rep->rep_phone!="" ? $rep->rep_phone : $off->off_phone; ?> (p)<br />

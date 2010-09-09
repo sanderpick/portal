@@ -193,7 +193,7 @@ $.fn.visualize = function(options, container){
 				
 				canvasContain.addClass('visualize-pie');
 				
-				if(o.pieLabelPos == 'outside'){ canvasContain.addClass('visualize-pie-outside'); }	
+				if(o.pieLabelPos == 'outside'){ canvasContain.addClass('visualize-pie-outside'); }
 						
 				var centerx = Math.round(canvas.width()/2);
 				var centery = Math.round(canvas.height()/2);
@@ -202,10 +202,16 @@ $.fn.visualize = function(options, container){
 				var toRad = function(integer){ return (Math.PI/180)*integer; };
 				var labels = $('<ul class="visualize-labels"></ul>')
 					.insertAfter(canvas);
+					
+				// swp
+				$(".visualize-key",self[0].parentNode).unwrap();
 
 				//draw the pie pieces
 				$.each(memberTotals, function(i){
 					var fraction = (this <= 0 || isNaN(this))? 0 : this / dataSum;
+					ctx.strokeStyle = "#ffffff";
+					ctx.lineJoin = "bevel";
+					ctx.lineWidth = 2;
 					ctx.beginPath();
 					ctx.moveTo(centerx, centery);
 					ctx.arc(centerx, centery, radius, 
@@ -216,9 +222,10 @@ $.fn.visualize = function(options, container){
 			        ctx.closePath();
 			        ctx.fillStyle = dataGroups[i].color;
 			        ctx.fill();
+					ctx.stroke();
 			        // draw labels
 			       	var sliceMiddle = (counter + fraction/2);
-			       	var distance = o.pieLabelPos == 'inside' ? radius/1.5 : radius +  radius / 5;
+			       	var distance = o.pieLabelPos == 'inside' ? radius/1.5 : radius + radius / 5;
 			        var labelx = Math.round(centerx + Math.sin(sliceMiddle * Math.PI * 2) * (distance));
 			        var labely = Math.round(centery - Math.cos(sliceMiddle * Math.PI * 2) * (distance));
 			        var leftRight = (labelx > centerx) ? 'right' : 'left';
@@ -234,10 +241,43 @@ $.fn.visualize = function(options, container){
 				        		.css({left: labelx, top: labely})
 				        		.append(labeltext);	
 				        labeltext
-				        	.css('font-size', radius / 8)		
+				        	.css('font-size', 10)		
 				        	.css('margin-'+leftRight, -labeltext.width()/2)
 				        	.css('margin-'+topBottom, -labeltext.outerHeight()/2);
-				        	
+				
+						// swp
+						var desc = $(".visualize-key li",self[0].parentNode)[i];
+						var desctext = $(".visualize-key-label",desc);
+						desctext.css('font-size', 9);
+						var descx = Math.round(centerx + Math.sin(sliceMiddle * Math.PI * 2) * (radius));
+						var descy = Math.round(centery - Math.cos(sliceMiddle * Math.PI * 2) * (radius));
+						
+						var line_sx = descx;
+						var line_sy = descy;
+						
+						if(descx > centerx) {
+							descx += 5;
+							
+						}
+						else {
+							descx -= desctext.width() + 5;
+							//line_sx += desctext.width();
+						}
+						
+						if(descy > centery) descy += 5;
+						else descy -= desctext.outerHeight() + 5;
+						
+						var line_fx = descx;
+						var line_fy = descy;
+	
+						$(desc).css({ left:descx, top:descy });
+						
+						//ctx.strokeStyle = "#000000";
+						//ctx.lineWidth = 1;
+						//ctx.beginPath();
+						//ctx.moveTo(line_sx, line_sy);
+				        //ctx.lineTo(line_fx, line_fy);
+				        //ctx.stroke();
 				        	
 				        if(dataGroups[i].textColor){ labeltext.css('color', dataGroups[i].textColor); }	
 			        }

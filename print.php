@@ -25,7 +25,7 @@ else {
 	if(!$m->getRow("es_proposals",$pro_key,"pro_key")) exit("Sorry, your proposal key is invalid or expired.");
 	else {
 		$pro = $m->lastData();
-		require("includes/print-portal.php");
+		require("includes/portal.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
@@ -52,30 +52,40 @@ else {
 	<script type="text/javascript">
 		$(function() {
 			// move graphs
+			$(".system-graphs").appendTo("#system-graphs-holder");
 			$(".performance-graphs").appendTo("#performance-graphs-holder");
 			$(".financials-graphs").appendTo("#financials-graphs-holder");
 			// move tables
 			$("#financials-table").appendTo("#financials-table-holder");
+			// remove breaks
+			$("#financials-graphs-holder br").remove();
+			$("#financials-table-holder br").remove();
 			// determine whether or to draw bill comparison
 			var draw_bill = <?php echo $draw_bill; ?>;
 			// visualize tables
 			$(".vis table").each(function(i) {
 				var type, colors, key, post, pre;
 				switch(i) {
-					case 0 : type = "area"; colors = ["#5880c0","#b1cd49"]; key = true; pre = ""; post = " kWh";
-						if(draw_bill) $(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"100px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
+					case 0 : type = "pie"; colors = ["#333333","#808080","#b1cd49"]; key = true;
+						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"200px",height:"200px" });
 						break;
-					case 1 : type = "bar"; colors = ["#5880c0"]; key = false; pre = "$"; post = "";
-						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"60px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
+					case 1 : type = "pie"; colors = ["#333333","#ccde89","#b1cd49"]; key = true;
+						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"200px",height:"200px" });
 						break;
-					case 2 : type = "bar"; colors = ["#eae854"]; key = false; pre = ""; post = "";
-						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"60px",yLabelPre:pre,yLabelPost:post,xTitle:"– kWh/m<span class='super'>2</span>/day over First Year –" });
+					case 2 : type = "pie"; colors = ["#333333","#b1cd49"]; key = true;
+						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"130px",height:"130px" });
 						break;
-					case 3 : type = "bar"; colors = ["#5880c0","#b1cd49"]; key = true; pre = "$"; post = "";
-						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"160px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
+					case 3 : type = "area"; colors = ["#333333","#b1cd49"]; key = true; pre = ""; post = " kWh";
+						if(draw_bill) $(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"100px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
 						break;
-					case 4 : type = "bar"; colors = ["#b1cd49"]; key = true; pre = "$"; post = "";
-						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"558px",height:"160px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
+					case 4 : type = "bar"; colors = ["#b1cd49"]; key = false; pre = "$"; post = "";
+						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"60px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
+						break;
+					case 5 : type = "bar"; colors = ["#eae854"]; key = false; pre = ""; post = "";
+						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"60px",yLabelPre:pre,yLabelPost:post,xTitle:"– kWh/m<span class='super'>2</span>/day over First Year –" });
+						break;
+					case 6 : type = "bar"; colors = ["#333333","#b1cd49"]; key = true; pre = "$"; post = "";
+						$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"160px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
 						break;
 				}
 			});
@@ -87,35 +97,46 @@ else {
 		<div id="proposal-content">
 			<?php $current_section = "Overview"; ?>
 			<?php require("includes/header.print.php"); ?>
-			<?php require("includes/overview.proposal.php"); ?>
-			</div><div style="page-break-before:always;" class="fake-break"></div>
+				<?php require("includes/overview.proposal.php"); ?>
+			</div>
+			<div style="page-break-before:always;" class="fake-break"></div>
 			<?php $current_section = "System Details"; ?>
 			<?php require("includes/header.print.php"); ?>
-			<?php require("includes/system.proposal.php"); ?>
-			</div><div style="page-break-before:always;" class="fake-break"></div>
+				<?php require("includes/system.proposal.php"); ?>
+			</div>
+			<div style="page-break-before:always;" class="fake-break"></div>
+			<?php require("includes/header.print.php"); ?>
+				<div id="system-graphs-holder"></div>
+			</div>
+			<div style="page-break-before:always;" class="fake-break"></div>
 			<?php $current_section = "System Performance"; ?>
 			<?php require("includes/header.print.php"); ?>
-			<?php require("includes/performance.proposal.php"); ?>
-			</div><div style="page-break-before:always;" class="fake-break"></div>
+				<?php require("includes/performance.proposal.php"); ?>
+			</div>
+			<div style="page-break-before:always;" class="fake-break"></div>
 			<?php require("includes/header.print.php"); ?>
-			<div id="performance-graphs-holder"></div></div>
-			<?php echo $layout_html; ?>
+				<div id="performance-graphs-holder"></div>
+			</div>
+			<?php echo $print_layout_html; ?>
 			<div style="page-break-before:always;" class="fake-break"></div>
 			<?php $current_section = "Financial Details"; ?>
 			<?php require("includes/header.print.php"); ?>
-			<?php require("includes/financials.proposal.php"); ?>
-			</div><div style="page-break-before:always;" class="fake-break"></div>
-			<?php require("includes/header.print.php"); ?>
-			<div id="financials-table-holder"></div></div>
+				<?php require("includes/financials.proposal.php"); ?>
+			</div>
 			<div style="page-break-before:always;" class="fake-break"></div>
 			<?php require("includes/header.print.php"); ?>
-			<div id="financials-graphs-holder"></div></div>
-			</div><div style="page-break-before:always;" class="fake-break"></div>
+				<div id="financials-table-holder"></div>
+			</div>
+			<div style="page-break-before:always;" class="fake-break"></div>
+			<?php require("includes/header.print.php"); ?>
+				<div id="financials-graphs-holder"></div>
+			</div>
+			<div style="page-break-before:always;" class="fake-break"></div>
 			<?php $current_section = "Environmental Details"; ?>
 			<?php require("includes/header.print.php"); ?>
-			<?php require("includes/environmental.proposal.php"); ?>
+				<?php require("includes/environmental.proposal.php"); ?>
 			</div>
-			<?php echo $materials_html; ?>
+			<?php echo $print_materials_html; ?>
 		</div>
 	</div>
 </body>
