@@ -82,14 +82,18 @@ $mounting_qntys = array();
 $mounting_descs = array();
 $mounting_prices = array();
 // rebate
-$rebate_types = array();
-$rebate_descs = array();
-$rebate_prices = array();
+$rebate_types_bbl = array();
+$rebate_descs_bbl = array();
+$rebate_prices_bbl = array();
+$rebate_types_abl = array();
+$rebate_descs_abl = array();
+$rebate_prices_abl = array();
 // connections
 $connections_desc = "";
 $connections_price = 0;
 // layout images on names
 $layout_html = "";
+$print_layout_html = "";
 // install params
 $install_params = "";
 // loop dat shit!
@@ -161,16 +165,77 @@ foreach($zones as $zone) {
 	$mounting_descs[] = $m->lastData()->rac_desc;
 	$mounting_prices[] = $zone->zon_racking_price;
 	// rebate
-	$rebate_types[] = "@ $".(round($zone->zon_rebate / $zone->zon_size / 10)/100)." / Watt";
-	$rebate_descs[] = $zone->zon_rebate_desc;
-	$rebate_prices[] = $zone->zon_rebate;
+	$rebate_types_bbl[] = "@ $".(floor($zone->zon_rebate / $zone->zon_size / 10)/100)." / Watt";
+	$rebate_descs_bbl[] = $zone->zon_rebate_desc;
+	$rebate_prices_bbl[] = $zone->zon_rebate;
 	// add to misc materials
 	$connections_price += $zone->zon_connection_price;
 	if($zone->zon_connection_price>0) $connections_desc = "Mounting Materials";
 	// build the layout text
 	if($m->getRow("es_uploads",$zone->zon_layout)) {
 		$i_url = $EINSTEIN_URI.$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
-		$layout_html .= "<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span><br /><img src='".$i_url."' width='650' style='padding-top:10px;' alt='Zone Layout' /><br /><br />";
+		$layout_html .= "<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span><img src='".$i_url."' width='650' class='layout-img' alt='Zone Layout' /><br /><br />";
+		$print_layout_html .= "<div style='page-break-before:always;' class='fake-break'></div>";
+		$print_layout_html .= '<div class="proposal-head">
+								<table style="width:664px;">
+									<tr>
+										<td style="padding:0 0 6px 0; vertical-align:bottom;">
+											<h1 class="page-head">
+												<span style="font-weight:bold;">System Layout</span> '.$job->job_name.' &ndash; '.$f->size.'kW
+											</h1>
+										</td>
+										<td style="padding:0 0 4px 0;" align="right"><img src="gfx/logo-black.png" alt="small logo" /></td>
+									</tr>
+								</table>
+							</div>
+							<div class="page proposal-page">
+								<table>
+									<tbody>
+										<tr>
+											<td style="padding:0;">
+												<p class="prop-header-txt">
+													<span class="prepared">PV Proposal #'.$pro->ID.' Prepared for:</span>
+													<br />
+													'.$job_html.'
+												</p>
+											</td>
+											<td style="padding:0; float:right;">
+												<p class="prop-header-txt" style="text-align:right;">
+													<span class="prepared">Prepared by:</span><br />
+													'.$rep->rep_name_first." ".$rep->rep_name_last.'<br />
+													'.$rep->rep_email.' (e)<br />
+													'.($rep->rep_phone!="" ? $rep->rep_phone : $off->off_phone).' (p)<br />
+													'.$off->off_city.", ".$off->off_state.'
+												</p>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<br /><br />';
+		$print_layout_html .= "<table>
+								<tbody>
+									<tr>
+										<td style='padding:0;' colspan='2'>
+											<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span>
+											<img src='".$i_url."' width='650' class='layout-img' alt='Zone Layout' /><br /><br />
+										</td>
+									</tr>
+									<tr><td style='padding:0;' colspan='1'>&nbsp;</td></tr>
+									<tr>
+										<td style='padding:0;' colspan='2'>
+											I have reviewed and I approve the location and layout of the solar system installation as proposed.
+										</td>
+									</tr>
+									<tr><td style='padding:0;' colspan='1'>&nbsp;</td></tr>
+									<tr><td style='padding:0;' colspan='1'>&nbsp;</td></tr>
+									<tr>
+										<td style='padding:0; border-top:1px dotted #222222;' colspan='1'>
+											Signature / Date
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>";
 	}
 	// get the tilt
 	if($zone->zon_tilt!="custom") {
@@ -178,23 +243,28 @@ foreach($zones as $zone) {
 	} else $zone_tilt = $zone->zon_custom_tilt;
 	// install params
 	$install_params .= "<br /><br />";
-	$install_params .= "<span class='caption'>".$zone->zon_name." Installation Parameters:</span>";
-	$install_params .= "<br />";
-	$install_params .= "<table cellspacing='0' cellpadding='0' style='margin-top:10px;'>";
-	$install_params .= "<thead>";
-	$install_params .= "<tr>";
-	$install_params .= "<th align='left'>DC Array Size</th>";
-	$install_params .= "<th align='right'>Annual Production</th>";
-	$install_params .= "<th align='right'>Tilt</th>";
-	$install_params .= "<th align='right'>Azimuth</th>";
+	$install_params .= "<table>";
+	$install_params .= "<caption>".$zone->zon_name." Installation Parameters:</caption>";
+	$install_params .= "<tbody class='tabled'>";
+	$install_params .= "<tr class='dark'>";
+	$install_params .= "<td>DC Array Size</td>";
+	$install_params .= "<td align='right'>".$zone->zon_size." kW</td>";
 	$install_params .= "</tr>";
-	$install_params .= "</thead>";
-	$install_params .= "<tbody>";
-	$install_params .= "<tr class='".$row_color[($c+1)%2]."'>";
-	$install_params .= "<td>".$zone->zon_size." kW</td>";
+	$install_params .= "<tr class='light'>";
+	$install_params .= "<td>1st Year Solar Energy Production</td>";
 	$install_params .= "<td align='right'>".number_format($zone->zon_production)." kWh</td>";
+	$install_params .= "</tr>";
+	$install_params .= "<tr class='dark'>";
+	$install_params .= "<td>Tilt</td>";
 	$install_params .= "<td align='right'>".$zone_tilt."º</td>";
+	$install_params .= "</tr>";
+	$install_params .= "<tr class='light'>";
+	$install_params .= "<td>Azimuth</td>";
 	$install_params .= "<td align='right'>".$zone->zon_azimuth."º</td>";
+	$install_params .= "</tr>";
+	$install_params .= "<tr>";
+	$install_params .= "<td class='big darker round-l'>Portion of total System Energy Production</td>";
+	$install_params .= "<td align='right' class='big darker round-r'>".(round($zone->zon_production / $f->production * 10000)/100)."%</td>";
 	$install_params .= "</tr>";
 	$install_params .= "</tbody>";
 	$install_params .= "</table>";
@@ -261,143 +331,173 @@ $inverter_prices = array_values(array_filter($inverter_prices,"strlen"));
 $add_rebate_types = explode(",",substr($pro->pro_rebate_type,0,-1));
 $add_rebate_descs = explode(",",substr($pro->pro_rebate_desc,0,-1));
 $add_rebate_amnts = explode(",",substr($pro->pro_rebate_amnt,0,-1));
+$add_rebate_order = explode(",",substr($pro->pro_rebate_display_weight,0,-1));
 for($i=0;$i<count($add_rebate_types);$i++) {
 	if($add_rebate_amnts[$i]!="") {
 		switch($add_rebate_types[$i]) {
 			case 0 :
-				$rebate_types[] = "@ $".$add_rebate_amnts[$i]." / Watt";
-				$rebate_prices[] = $add_rebate_amnts[$i]*$f->size*1000;
+				$rt = "@ $".$add_rebate_amnts[$i]." / Watt";
+				$rp = $add_rebate_amnts[$i]*$f->size*1000;
 				break;
 			case 1 :
-				$rebate_types[] = "@ ".$add_rebate_amnts[$i]."% System Price";
-				$rebate_prices[] = $add_rebate_amnts[$i]*$f->price_nf*0.01;
+				$rt = "@ ".$add_rebate_amnts[$i]."% System Price";
+				$rp = $add_rebate_amnts[$i]*$f->price_nf*0.01;
 				break;
 			case 2 :
-				$rebate_types[] = "@ Fixed Amount";
-				$rebate_prices[] = $add_rebate_amnts[$i];
+				$rt = "@ Fixed Amount";
+				$rp = $add_rebate_amnts[$i];
 				break;
 		}
-		$rebate_descs[] = $add_rebate_descs[$i];
+		if($add_rebate_order[$i]==0) {
+			$rebate_types_bbl[] = $rt;
+			$rebate_prices_bbl[] = $rp;
+			$rebate_descs_bbl[] = $add_rebate_descs[$i];
+		} else {
+			$rebate_types_abl[] = $rt;
+			$rebate_prices_abl[] = $rp;
+			$rebate_descs_abl[] = $add_rebate_descs[$i];
+		}
 	}
+}
+// show tax credit info?
+$use_credit = $f->credit!=0 ? TRUE : FALSE;
+if($use_credit) {
+	$rebate_types_abl[] = "";
+	$rebate_prices_abl[] = $f->credit_nf;
+	$rebate_descs_abl[] = "30% Federal Tax Credit*";
 }
 // components lines
 $components_html = "";
 $c = 0;
 for($i=0;$i<count($module_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$module_qntys[$i]."</td><td class='cell-indent'>".$module_descs[$i]."</td><td align='right'>".number_format($module_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$module_qntys[$i]."</td><td class='ex'>x</td><td>".$module_descs[$i]."</td><td align='right'>$".number_format($module_prices[$i])."</td></tr>";
 	$c++;
 }
 for($i=0;$i<count($mounting_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$mounting_qntys[$i]." (ft.)</td><td class='cell-indent'>".$mounting_descs[$i]."</td><td align='right'>".number_format($mounting_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])." (ft.)</td><td class='ex'>x</td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
 	$c++;
 }
 for($i=0;$i<count($inverter_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='cell-indent'>".$inverter_descs[$i]."</td><td align='right'>".number_format($inverter_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'>x</td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
 	$c++;
 }
 if($connections_price+$f->misc_materials>0) {
 	$misc_desc = "";
 	if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, ";
-	$misc_desc .= $connections_desc.", ";
+	$misc_desc .= $connections_desc!="" ? $connections_desc.", " : "";
 	if($pro->pro_misc_materials>0 && $pro->pro_misc_materials_desc!="") $misc_desc .= $pro->pro_misc_materials_desc.", ";
 	else if($pro->pro_misc_materials>0) $misc_desc .= "Other Materials, ";
 	$misc_desc = substr($misc_desc,0,-2);
 	if($misc_desc=="") $misc_desc = "Misc. Materials";
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td class='cell-indent'>".$misc_desc."</td><td align='right'>".number_format($connections_price+$f->misc_materials)."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($connections_price+$f->misc_materials)."</td></tr>";
 	$c++;
 }
-$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>1</td><td class='cell-indent'>FREE LightGauge Data Monitoring System</td><td align='right'>0</td></tr>";
+$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>1</td><td class='ex'>x</td><td>FREE LightGauge Data Monitoring System</td><td align='right'>$0</td></tr>";
 $c++;
-$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td colspan='2' class='cell-total'>Materials Total</td><td align='right' class='cell-total'>$".number_format($f->comp_total)."</td></tr>";
+$components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
 // labor lines
 $labor_html = "";
 $c = 0;
-$labor_html .= "<tr class='".$row_color[($c+1)%2]."'><td>PV System – Installation Labor</td><td align='right'>".$f->install_labor."</td></tr>";
+$labor_html .= "<tr class='dark'><td>PV System – Installation Labor</td><td align='right'>$".$f->install_labor."</td></tr>";
 $c++;
-$labor_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-total'>Labor Total</td><td align='right' class='cell-total'>$".$f->install_labor."</td></tr>";
+$labor_html .= "<tr><td class='big darker round-l'>Labor Total</td><td align='right' class='big darker round-r'>$".$f->install_labor."</td></tr>";
 // fees lines
 $fees_html = "";
 $c = 0;
 if($f->permit!=0) {
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Permit Fees</td><td align='right'>".$f->permit."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Permit Fees</td><td align='right'>$".$f->permit."</td></tr>";
 	$c++;
 }
 if($pro->pro_engin_fee!=0) {
 	$engin_up = $pro->pro_engin_fee*$off->off_sub_up*0.01;
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Engineering Fees</td><td align='right'>".number_format($pro->pro_engin_fee+$engin_up)."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Engineering Fees</td><td align='right'>$".number_format($pro->pro_engin_fee+$engin_up)."</td></tr>";
 	$c++;
 }
 if($pro->pro_extra_fee!=0) {
 	$extra_up = $pro->pro_extra_fee*$off->off_sub_up*0.01;
 	if($pro->pro_extra_desc!="") $pro->pro_extra_desc = "(".$pro->pro_extra_desc.")";
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Extra Fees ".$pro->pro_extra_desc."</td><td align='right'>".number_format($pro->pro_extra_fee+$extra_up)."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Extra Fees ".$pro->pro_extra_desc."</td><td align='right'>$".number_format($pro->pro_extra_fee+$extra_up)."</td></tr>";
 	$c++;
 }
 if($f->equip!=0) {
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Equipment Rental Fees</td><td align='right'>".$f->equip."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Equipment Rental Fees</td><td align='right'>$".$f->equip."</td></tr>";
 	$c++;
 }
 if($pro->pro_inspection!=0) {
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Design / Inspection / Commissioning Fees</td><td align='right'>".number_format($pro->pro_inspection)."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Design / Inspection / Commissioning Fees</td><td align='right'>$".number_format($pro->pro_inspection)."</td></tr>";
 	$c++;
 }
-
-for($i=0;$i<count($rebate_descs);$i++) {
-	if($rebate_prices[$i]!=0) {
-		if($rebate_descs[$i]=="") $rebate_descs[$i] = "Rebate";
-		$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-credit'>".$rebate_descs[$i]." (".$rebate_types[$i].")</td><td class='cell-credit' align='right'>-".number_format($rebate_prices[$i])."</td></tr>";
+for($i=0;$i<count($rebate_descs_bbl);$i++) {
+	if($rebate_prices_bbl[$i]!=0) {
+		if($rebate_descs_bbl[$i]=="") $rebate_descs_bbl[$i] = "Rebate";
+		$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$rebate_descs_bbl[$i]." (".$rebate_types_bbl[$i].")</td><td class='red-txt' align='right'>-&nbsp&nbsp$".number_format($rebate_prices_bbl[$i])."</td></tr>";
 		$c++;
 	}
 }
-
-
 if($pro->pro_discount!=0) {
 	if($pro->pro_discount_desc!="") $pro->pro_discount_desc = "(".$pro->pro_discount_desc.")";
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-credit'>Discount ".$pro->pro_discount_desc."</td><td class='cell-credit' align='right'>-".number_format($pro->pro_discount)."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Discount ".$pro->pro_discount_desc."</td><td class='red-txt' align='right'>-&nbsp&nbsp$".number_format($pro->pro_discount)."</td></tr>";
 	$c++;
 }
-$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Subtotal</td><td align='right'>".$f->subtotal."</td></tr>";
+$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Subtotal</td><td align='right'>$".$f->subtotal."</td></tr>";
 $c++;
-$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Sales Tax</td><td align='right'>".$f->tax."</td></tr>";
+$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Sales Tax</td><td align='right'>$".$f->tax."</td></tr>";
 $c++;
-$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-rebate cell-emphasis'>Total System Out of Pocket Cost (@ $".$f->ppw_cus_net." / Watt)</td><td class='cell-rebate cell-emphasis' align='right'>$".$f->cus_price."</td></tr>";
-$c++;
-
-// show tax credit info?
-$use_credit = $f->credit!=0 ? TRUE : FALSE;
-if($use_credit) {
-	$c = 1;
-	//$fees_html .= "<tr><td colspan='2'>&nbsp;</td></tr>";
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-credit'>30% Federal Tax Credit</td><td class='cell-credit' align='right'>-".$f->credit."</td></tr>";
-	$c++;
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td class='cell-total'>Final Cost To You*</td><td class='cell-total' align='right'>$".$f->cus_after_credit."</td></tr>";
+$fees_html .= "<tr><td class='big darker round-l'>Total System Out of Pocket Cost (@ $".$f->ppw_cus_net." / Watt)</td><td class='big darker round-r' align='right'>$".$f->cus_price."</td></tr>";
+// rebates after out of pocket
+$c = 1;
+for($i=0;$i<count($rebate_descs_abl);$i++) {
+	if($rebate_prices_abl[$i]!=0) {
+		if($rebate_descs_abl[$i]=="") $rebate_descs_abl[$i] = "Rebate";
+		if($rebate_types_abl[$i]!="") $rebate_types_abl[$i] = "(".$rebate_types_abl[$i].")";
+		$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$rebate_descs_abl[$i]." ".$rebate_types_abl[$i]."</td><td class='red-txt' align='right'>-&nbsp&nbsp$".number_format($rebate_prices_abl[$i])."</td></tr>";
+		$c++;
+	}
 }
+// final cost
+$fees_html .= "<tr><td class='".$row_color[($c+1)%2]." round-l'>Final Cost To You</td><td align='right' class='".$row_color[($c+1)%2]." round-r' style='font-weight:bold;'>$".$f->cus_after_credit."</td></tr>";
 // materials
 $materials_html = "";
+$print_materials_html = "";
 foreach($module_descs as $module_desc) {
 	if($m->getRow("es_modules",$module_desc,"mod_desc")) {
 		$module = $m->lastData();
 		if($module->mod_cutsheet_uri!="") {
-			$materials_html .= "<tr>
-									<tr>
-										<td colspan='2' style='padding:0;'>
-											<h2 class='spec-head'>".$module_desc."</h2>
-										</td>
-									</tr>
+			$materials_html .= "<tr><td colspan='2'>&nbsp;</td></tr>
+								<tr>
 									<td style='padding:0; width:180px;'>
 										<a href='".$module->mod_cutsheet_uri."'><img src='".$module->mod_cutsheet_t_uri."' width='154' height='200' alt='Cutsheet Thumbnail' /></a>
 									</td>
 									<td style='padding:0; vertical-align:top;'>
-										<p class='specs'>
-											<img src='gfx/pdf_icon.jpg' width='30' height='10' alt='PDF Icon' /> <a href='".$module->mod_cutsheet_uri."'>Download Technical Data Sheet</a>
-											<br /><br />
-											<img src='gfx/ul-ce_logos.jpg' width='130' height='50' alt='UL and CE Logos' />
-										</p>
+										<h2 class='spec-head'>".$module_desc."</h2>
+										<img src='gfx/pdf_icon.jpg' width='30' height='10' alt='PDF Icon' /> <a href='".$module->mod_cutsheet_uri."'>Download Technical Data Sheet</a>
+										<br /><br />
+										<img src='gfx/ul-ce_logos.jpg' width='130' height='50' alt='UL and CE Logos' />
 									</td>
-							  </tr>
-							  <tr>
-									<td colspan='2'>&nbsp;</td>
 							  </tr>";
+		}
+		if($module->mod_print_cutsheet_uri!="") {
+			$print_uris = explode(",",$module->mod_print_cutsheet_uri);
+			foreach($print_uris as $uri) {
+				$print_materials_html .= "<div style='page-break-before:always;' class='fake-break'></div>
+										<div class='proposal-head'>
+											<table style='width:664px;'>
+												<tr>
+													<td style='padding:0 0 6px 0; vertical-align:bottom;'>
+														<h1 class='page-head'>
+															<span style='font-weight:bold;'>Materials</span> ".$job->job_name." &ndash; ".$f->size."kW
+														</h1>
+													</td>
+													<td style='padding:0 0 4px 0;' align='right'>
+														<img src='gfx/logo-black.png' alt='small logo' />
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div class='page proposal-page'>
+											<img src='".$uri."' alt='".$module_desc."' />
+										</div>";
+			}
 		}
 	}
 }
@@ -405,26 +505,41 @@ foreach($inverter_descs as $inverter_desc) {
 	if($m->getRow("es_inverters",$inverter_desc,"inv_desc")) {
 		$inverter = $m->lastData();
 		if($inverter->inv_cutsheet_uri!="") {
-			$materials_html .= "<tr>
-									<tr>
-										<td colspan='2' style='padding:0;'>
-											<h2 class='spec-head'>".$inverter_desc."</h2>
-										</td>
-									</tr>
+			$materials_html .= "<tr><td colspan='2'>&nbsp;</td></tr>
+								<tr>
 									<td style='padding:0; width:180px;'>
 										<a href='".$inverter->inv_cutsheet_uri."'><img src='".$inverter->inv_cutsheet_t_uri."' width='154' height='200' alt='Cutsheet Thumbnail' /></a>
 									</td>
 									<td style='padding:0; vertical-align:top;'>
-										<p class='specs'>
-											<img src='gfx/pdf_icon.jpg' width='30' height='10' alt='PDF Icon' /> <a href='".$inverter->inv_cutsheet_uri."'>Download Technical Data Sheet</a>
-											<br /><br />
-											<img src='gfx/ul-ce_logos.jpg' width='130' height='50' alt='UL and CE Logos' />
-										</p>
+										<h2 class='spec-head'>".$inverter_desc."</h2>
+										<img src='gfx/pdf_icon.jpg' width='30' height='10' alt='PDF Icon' /> <a href='".$inverter->inv_cutsheet_uri."'>Download Technical Data Sheet</a>
+										<br /><br />
+										<img src='gfx/ul-ce_logos.jpg' width='130' height='50' alt='UL and CE Logos' />
 									</td>
-							  </tr>
-							  <tr>
-									<td colspan='2'>&nbsp;</td>
 							  </tr>";
+		}
+		if($inverter->inv_print_cutsheet_uri!="") {
+			$print_uris = explode(",",$inverter->inv_print_cutsheet_uri);
+			foreach($print_uris as $uri) {
+				$print_materials_html .= "<div style='page-break-before:always;' class='fake-break'></div>
+										<div class='proposal-head'>
+											<table style='width:664px;'>
+												<tr>
+													<td style='padding:0 0 6px 0; vertical-align:bottom;'>
+														<h1 class='page-head'>
+															<span style='font-weight:bold;'>Materials</span> ".$job->job_name." &ndash; ".$f->size."kW
+														</h1>
+													</td>
+													<td style='padding:0 0 4px 0;' align='right'>
+														<img src='gfx/logo-black.png' alt='small logo' />
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div class='page proposal-page'>
+											<img src='".$uri."' alt='".$inverter_desc."' />
+										</div>";
+			}
 		}
 	}
 }

@@ -1,22 +1,45 @@
 <!-- proposal performance START -->
 <div id="prop-performance" class="prop-section">
-	<table>
+	<table style="width:60%;">
 		<caption>Estimated System Contribution*:</caption>
-		<thead>
-			<tr>
-				<th align="left">Year 1 Energy Produced</th>
-				<th align="left">Annual Energy Consumed</th>
-				<th align="right">System Contribution</th>
-			</tr>
-		</thead>
-		<tbody>
+		<tbody class="tabled">
 			<tr class="dark">
-				<td class="cell-rebate cell-emphasis"><?php echo number_format($f->production); ?> kWh</td>
-				<td class="cell-rebate cell-emphasis" align="left"><?php echo $job->job_kwh_load>0 ? number_format($job->job_kwh_load)." kWh" : "n / a"; ?></td>
-				<td class="cell-rebate cell-emphasis" align="right"><?php echo $job->job_kwh_load>0 ? (round($f->production / $job->job_kwh_load * 10000)/100)."%" : "n / a"; ?></td>
+				<td>1st Year Solar Energy Production</td>
+				<td align="right"><?php echo number_format($f->production); ?> kWh</td>
+			</tr>
+			<tr class="light">
+				<td>Overall Annual Energy Consumed</td>
+				<td align="right"><?php echo $job->job_kwh_load>0 ? number_format($job->job_kwh_load)." kWh" : "n / a"; ?></td>
+			</tr>
+			<tr>
+				<td class="big darker round-l">System Contribution</td>
+				<td class="big darker round-r" align="right"><?php echo $job->job_kwh_load>0 ? (round($f->production / $job->job_kwh_load * 10000)/100)."%" : "n / a"; ?></td>
 			</tr>
 		</tbody>
 	</table>
+	<div style="margin:0 0 0 60%; position:relative;">
+		<div class="vis vis-pie" style="position:absolute; left:70px; top:-108px;">
+			<table>
+				<caption>Energy Distribution</caption>
+				<thead>
+					<tr>
+						<td></td>
+						<th>kWh</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>Energy from Utility</th>
+						<td><?php echo $job->job_kwh_load - $f->production; ?></td>
+					</tr>
+					<tr>
+						<th>Energy from Solar</th>
+						<td><?php echo $f->production; ?></td>
+					</tr>	
+				</tbody>
+			</table>
+		</div>
+	</div>
 	<?php echo $install_params; ?>
 	<br /><br />
 	<table>
@@ -115,19 +138,26 @@
 				<td align="right"><?php echo $pro_pvwatts[1][11]; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][11]; ?></td>
 			</tr>
-			<tr class="dark">
-				<td class="cell-rebate cell-emphasis">Year</td>
-				<td class="cell-rebate cell-emphasis"><?php echo $draw_bill ? number_format($job_bill_total)." kWh" : "-"; ?></td>
-				<td align="right" class="cell-rebate cell-emphasis"><?php echo $pro_pvwatts[0][12]; ?> <span style="font-size:12px;">kWh/m<span class="super">2</span>/day</span></td>
-				<td align="right" class="cell-rebate cell-emphasis"><?php echo number_format($pro_pvwatts[1][12]); ?> kWh</td>
-				<td align="right" class="cell-rebate cell-emphasis">$<?php echo number_format($pro_pvwatts[2][12]); ?></td>
+			<tr>
+				<td class="big darker round-l">Year</td>
+				<td class="big darker"><?php echo $draw_bill ? number_format($job_bill_total)." kWh" : "-"; ?></td>
+				<td align="right" class="big darker"><?php echo $pro_pvwatts[0][12]; ?> <span style="font-size:12px;">kWh/m<span class="super">2</span>/day</span></td>
+				<td align="right" class="big darker"><?php echo number_format($pro_pvwatts[1][12]); ?> kWh</td>
+				<td align="right" class="big darker round-r">$<?php echo number_format($pro_pvwatts[2][12]); ?></td>
 			</tr>
 		</tbody>
 	</table>
+	<br />
+	<table>
+		<tfoot>
+			<tr>
+				<td class="cell-foot" colspan="4">* Data as calculated by <a href="http://rredc.nrel.gov/solar/calculators/PVWATTS/version1/" target="_blank">PVWATTS</a> from the National Renewable Energy Laboratory.</td>
+			</tr>
+		</tfoot>
+	</table>
 	<br /><br />
 	<div class="vis vis-area performance-graphs">
-		<span class='caption'>Estimated System Output Analysis*:</span>
-		<?php if($draw_bill) echo "<br /><br />"; ?>
+		<?php if($draw_bill) echo ""; ?>
 		<table>
 			<caption>– Electricity Usage Comparison (estimate) –</caption>
 			<thead>
@@ -220,7 +250,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<br /><br />
+		<br />
 		<table>
 			<caption>– Available Solar Radiation –</caption>
 			<thead>
@@ -259,12 +289,5 @@
 			</tbody>
 		</table>
 	</div>
-	<table>
-		<tfoot>
-			<tr>
-				<td class="cell-foot" colspan="4">* Data as calculated by <a href="http://rredc.nrel.gov/solar/calculators/PVWATTS/version1/" target="_blank">PVWATTS</a> from the National Renewable Energy Laboratory.</td>
-			</tr>
-		</tfoot>
-	</table>
 </div>
 <!-- proposal performance END -->

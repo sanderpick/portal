@@ -28,83 +28,144 @@ for($i=0;$i<$analysis->sys_life;$i++) {
 	$analysis->payback_yrs += $sy->simple_payback;
 	$analysis->annual_data[] = $sy;
 }
+$analysis->total_profit -= $analysis->sys_inverter_half_life;
 // compile data
 $analysis->finish();
 ?>
 <!-- proposal financials START -->
 <div id="prop-financials" class="prop-section">
 	<table>
-		<caption>Financial Analysis:</caption>
-		<thead>
-			<tr>
-				<th style="vertical-align:bottom;" align="left">System<br />Size</th>
-				<th style="vertical-align:bottom;" class="cell-small-indent" align="left">1st Year<br />Energy<br />Production</th>
-				<th style="vertical-align:bottom;" class="cell-small-indent" align="left">Annual<br />Energy<br />Consumed</th>
-				<th style="vertical-align:bottom;" class="cell-small-indent" align="left">Net Cost or<br />Investment*</th>
-				<th style="vertical-align:bottom;" class="cell-small-indent" align="left">Utility<br />Rate</th>
-				<th style="vertical-align:bottom;" class="cell-small-indent" align="right">Levelized<span class="super">1</span><br />Value of<br />Solar Energy</th>
-			</tr>
-		</thead>
-		<tbody>
+		<caption>System Specs:</caption>
+		<tbody class="tabled">
 			<tr class="dark">
-				<td><?php echo $f->size; ?> kW</td>
-				<td align="left"><?php echo number_format($f->production); ?> kWh</td>
-				<td align="left"><?php echo number_format($job->job_kwh_load); ?> kWh</td>
-				<td align="left">$<?php echo $f->cus_after_credit; ?></td>
-				<td align="left">$<?php echo $zones[0]->zon_erate/100; ?> / kWh</td>
-				<td align="right">$<?php echo round(1000*$analysis->lcoe_solar_energy)/1000; ?> / kWh</td>
+				<td>System Size</td>
+				<td align="right" style="font-weight:bold;"><?php echo $f->size; ?> kW</td>
+			</tr>
+			<tr class="light">
+				<td>1st Year Solar Energy Production</td>
+				<td align="right"><?php echo number_format($f->production); ?> kWh</td>
+			</tr>
+			<tr class="dark">
+				<td>Overall Annual Energy Consumed</td>
+				<td align="right"><?php echo number_format($job->job_kwh_load); ?> kWh</td>
+			</tr>
+			<tr class="light">
+				<td>Current Utility Rate</td>
+				<td align="right" class="lighter">$<?php echo $zones[0]->zon_erate/100; ?> / kWh</td>
+			</tr>
+			<tr class="dark">
+				<td>Levelized Value of Solar Energy<span class="super">1</span></td>
+				<td align="right" class="lighter">$<?php echo round(1000*$analysis->lcoe_solar_energy)/1000; ?> / kWh</td>
+			</tr>
+			<tr>
+				<td class="big darker round-l">System Cost or Investment*</td>
+				<td align="right" class="big darker round-r">$<?php echo $f->cus_after_credit; ?></td>
 			</tr>
 		</tbody>
 	</table>
 	<br /><br />
+	<table>
+		<caption>Financial Summary:</caption>
+		<tbody class="tabled">
+			<tr class="dark">
+				<td>System Payback Period</td>
+				<td align="right" style="font-weight:bold;"><?php echo $analysis->payback_yrs; ?> Years</td>
+			</tr>
+			<tr class="light">
+				<td>30 Year Yield on Investment (tax-free IRR)<span class="super">2,3</span></td>
+				<td align="right"><?php echo round($analysis->irr_post_tax*10000)/100; ?>%</td>
+			</tr>
+			<!-- <tr class="dark">
+				<td>30 Year Yield on Investment (pre-tax IRR)<span class="super">2,&dagger;</span></td>
+				<td align="right" class="lighter"><php echo round($analysis->irr_pre_tax*10000)/100; ?>%</td>
+			</tr> -->
+			<tr class="dark">
+				<td>30 Year Cumulative Electric Cost WITHOUT Solar</td>
+				<td align="right">$<?php echo number_format($analysis->total_elec_bill_no_solar); ?></td>
+			</tr>
+			<tr class="light">
+				<td>30 Year Cumulative Electric Cost WITH Solar<span class="super">&dagger;</span></td>
+				<td align="right">-&nbsp;&nbsp;$<?php echo number_format($analysis->total_elec_bill_solar); ?></td>
+			</tr>
+			<tr class="dark">
+				<td>Your total energy cost savings from solar over 30 years</td>
+				<td align="right">=&nbsp;&nbsp;$<?php echo number_format($analysis->elec_savings); ?></td>
+			</tr>
+			<?php $bc = "light"; if($analysis->total_sorec_rev!=0) { ?>
+			<tr class="<?php echo $bc; ?>">
+				<td>SREC Revenue</td>
+				<td align="right" class="green-txt">+&nbsp;&nbsp;$<?php echo number_format($analysis->total_sorec_rev); ?></td>
+			</tr>
+			<?php $bc = $bc=="dark" ? "light" : "dark"; } ?>
+			<tr class="<?php echo $bc; $bc = $bc=="dark" ? "light" : "dark"; ?>">
+				<td>System Cost or Investment*</td>
+				<td align="right" class="red-txt">-&nbsp;&nbsp;$<?php echo number_format($analysis->sys_cost); ?></td>
+			</tr>
+			<tr>
+				<td class="big darker round-l">Total Profit from Solar Investment</td>
+				<td align="right" class="big darker round-r"><strong>$<?php echo number_format($analysis->elec_savings + $analysis->total_sorec_rev - $analysis->sys_cost); ?></strong></td>
+			</tr>
+		</tbody>
+	</table>
 	<div id="financials-table">
+		<br /><br />
 		<table>
-			<caption>30 Year Summary:</caption>
+			<caption>30 Year Financial Summary:</caption>
 			<thead>
 				<tr>
 					<th align="left">Year</th>
-					<th align="right">Electric Bill<br />WITHOUT Solar</th>
-					<th align="right">Electric Bill<br />WITH Solar</th>
+					<th align="right">Utility Rate</th>
+					<th align="right">Electric Bill <br />WITHOUT Solar</th>
+					<th align="right">Electric Bill <br />WITH Solar</th>
 					<th align="right">Annual Savings</th>
-					<th align="right">Payback on Solar Investment<br />(includes inverter replacement)</th>
+					<th align="right">Payback on Solar Investment <br />(includes inverter replacement)</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr class="dark">
 					<td>0</td>
-					<td align="right">-</td>
-					<td align="right">-</td>
-					<td align="right">-</td>
-					<td align="right" style="color:red;">$-<?php echo number_format($analysis->sys_cost); ?></td>
+					<td align="right">&ndash;</td>
+					<td align="right">&ndash;</td>
+					<td align="right">&ndash;</td>
+					<td align="right">&ndash;</td>
+					<td align="right" style="color:red;">-&nbsp;&nbsp;$<?php echo number_format($analysis->sys_cost); ?></td>
 				</tr>
 				<?php
 					$rows = ""; $bc = "light";
 					for($n=0;$n<$analysis->sys_life;$n++) {
+						if($analysis->annual_data[$n]->cashflow < 0) {
+							$cashflow = "-&nbsp;&nbsp;$".number_format(-$analysis->annual_data[$n]->cashflow);
+							$c = "green";
+						} else {
+							$cashflow = "$".number_format($analysis->annual_data[$n]->cashflow);
+							$c = "red";
+						}
+						
 						$c = $analysis->annual_data[$n]->cashflow > 0 ? "green" : "red";
 						$rows .= '<tr class="'.$bc.'">';
 						$rows .= 	'<td>'.($n+1).'</td>';
+						$rows .= 	'<td align="right">$'.(round(1000*$analysis->annual_data[$n]->utility)/1000).'</td>';
 						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->elec_bill_no_solar).'</td>';
 						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->elec_bill_solar).'</td>';
-						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->cum_savings_solar).'</td>';
-						$rows .= 	'<td align="right" style="color:'.$c.'">$'.number_format($analysis->annual_data[$n]->cashflow).'</td>';
+						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->total_solar_value).'</td>';
+						$rows .= 	'<td align="right" style="color:'.$c.'">'.$cashflow.'</td>';
 						$rows .= '</tr>';
 						$bc = $bc=="dark" ? "light" : "dark";
 					}
 					echo $rows;
 				?>
-				<tr class="light">
-					<td class="cell-rebate cell-emphasis">Total</td>
-					<td align="right" class="cell-rebate cell-emphasis">$<?php echo number_format($analysis->total_elec_bill_no_solar); ?></td>
-					<td align="right" class="cell-rebate cell-emphasis">$<?php echo number_format($analysis->total_elec_bill_solar); ?></td>
-					<td align="right" class="cell-rebate cell-emphasis">$<?php echo number_format($analysis->total_savings); ?></td>
-					<td align="right" class="cell-rebate cell-emphasis">&nbsp;</td>
+				<tr>
+					<td class="big darker round-l">Total</td>
+					<td align="right" class="big darker">&nbsp;</td>
+					<td align="right" class="big darker">$<?php echo number_format($analysis->total_elec_bill_no_solar); ?></td>
+					<td align="right" class="big darker">$<?php echo number_format($analysis->total_elec_bill_solar); ?></td>
+					<td align="right" class="big darker">$<?php echo number_format($analysis->total_savings); ?></td>
+					<td align="right" class="big darker round-r">&nbsp;</td>
 				</tr>
 			</tbody>
 		</table>
-		<br /><br />
 	</div>
 	<div class="vis vis-bar-financial financials-graphs">
-		<span class="caption">30 Year Summary:</span>
 		<br /><br />
 		<table>
 			<caption>– Annual Electricity Bill Comparison –</caption>
@@ -212,7 +273,7 @@ $analysis->finish();
 				</tr>
 			</tbody>
 		</table>
-		<br /><br />
+		<!-- <br />
 		<table>
 			<caption>– Cumulative Utility Savings from Solar Energy –</caption>
 			<thead>
@@ -253,38 +314,38 @@ $analysis->finish();
 			<tbody>
 				<tr>
 					<th>Cumulative Utility Savings</th>
-					<td><?php echo round($analysis->annual_data[0]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[1]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[2]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[3]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[4]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[5]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[6]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[7]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[8]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[9]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[10]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[11]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[12]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[13]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[14]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[15]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[16]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[17]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[18]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[19]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[20]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[21]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[22]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[23]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[24]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[25]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[26]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[27]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[28]->cum_savings_solar); ?></td>
-					<td><?php echo round($analysis->annual_data[29]->cum_savings_solar); ?></td>
+					<td><php echo round($analysis->annual_data[0]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[1]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[2]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[3]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[4]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[5]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[6]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[7]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[8]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[9]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[10]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[11]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[12]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[13]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[14]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[15]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[16]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[17]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[18]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[19]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[20]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[21]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[22]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[23]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[24]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[25]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[26]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[27]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[28]->cum_savings_solar); ></td>
+					<td><php echo round($analysis->annual_data[29]->cum_savings_solar); ></td>
 				</tr>
-				<!-- <tr>
+				<tr>
 					<th>Solar Investment (w/ Inverter Replacement and SOREC if applicable)</th>
 					<td><php echo round($analysis->annual_data[0]->simple_payback_sorec); ?></td>
 					<td><php echo round($analysis->annual_data[1]->simple_payback_sorec); ?></td>
@@ -316,74 +377,25 @@ $analysis->finish();
 					<td><php echo round($analysis->annual_data[27]->simple_payback_sorec); ?></td>
 					<td><php echo round($analysis->annual_data[28]->simple_payback_sorec); ?></td>
 					<td><php echo round($analysis->annual_data[29]->simple_payback_sorec); ?></td>
-				</tr> -->
+				</tr>
 			</tbody>
-		</table>
-		<br /><br />
+		</table> -->
 	</div>
-	<table>
-		<caption>Financial Summary:</caption>
-		<tbody>
-			<tr class="dark">
-				<td style="font-weight:bold;" colspan="4">30 Year Cumulative Electric Cost WITHOUT Solar</td>
-				<td style="font-weight:bold;" colspan="2" align="right">$<?php echo number_format($analysis->total_elec_bill_no_solar); ?></td>
-			</tr>
-			<tr class="light">
-				<td style="font-weight:bold;" colspan="4">30 Year Cumulative Electric Cost WITH Solar</td>
-				<td style="font-weight:bold;" colspan="2" align="right">$<?php echo number_format($analysis->total_elec_bill_solar); ?></td>
-			</tr>
-			<tr><td colspan="6">&nbsp;</td></tr>
-			<tr class="dark">
-				<td style="font-weight:bold;" colspan="4">Your total energy cost savings from solar over 30 years</td>
-				<td style="font-weight:bold;" colspan="2" align="right">$<?php echo number_format($analysis->elec_savings); ?></td>
-			</tr>
-			<?php $bc = "light"; if($analysis->total_sorec_rev!=0) { ?>
-			<tr class="<?php echo $bc; ?>">
-				<td style="font-weight:bold;" colspan="4">SREC Revenue</td>
-				<td style="font-weight:bold;" colspan="2" align="right">$<?php echo number_format($analysis->total_sorec_rev); ?></td>
-			</tr>
-			<?php $bc = $bc=="dark" ? "light" : "dark"; } ?>
-			<tr class="<?php echo $bc; $bc = $bc=="dark" ? "light" : "dark"; ?>">
-				<td style="font-weight:bold;" colspan="4">Total System Cost</td>
-				<td style="font-weight:bold;" colspan="2" align="right">$-<?php echo number_format($analysis->sys_cost); ?></td>
-			</tr>
-			<tr class="<?php echo $bc; ?>">
-				<td class="cell-rebate cell-emphasis" colspan="4">Total Profit from Solar Investment</td>
-				<td class="cell-rebate cell-emphasis" colspan="2" align="right"><strong>$<?php echo number_format($analysis->total_profit); ?></strong></td>
-			</tr>
-			<tr><td colspan="6">&nbsp;</td></tr>
-			<tr class="dark">
-				<td style="font-weight:bold;" colspan="4">Your Simple Cash Payback</td>
-				<td style="font-weight:bold;" colspan="2" align="right"><?php echo $analysis->payback_yrs; ?> Years</td>
-			</tr>
-			<tr><td colspan="6">&nbsp;</td></tr>
-			<tr class="dark">
-				<td style="font-weight:bold;" colspan="4">30 Year Yield on Investment (post-tax IRR)<span class="super">2,&spades;</span></td>
-				<td style="font-weight:bold;" colspan="2" align="right"><?php echo round($analysis->irr_post_tax*10000)/100; ?>%</td>
-			</tr>
-			<tr class="light">
-				<td style="font-weight:bold;" colspan="4">30 Year Yield on Investment (pre-tax IRR)<span class="super">2,&dagger;</span></td>
-				<td style="font-weight:bold;" colspan="2" align="right"><?php echo round($analysis->irr_pre_tax*10000)/100; ?>%</td>
-			</tr>
-		</tbody>
-	</table>
+	<br />
 	<table>
 		<tfoot>
 			<tr>
 				<td class="cell-foot">
+					1) &quot;Levelized Value of Solar Energy&quot; is the approximation of the average $/kWh value of energy produced from the quoted system. The system net cost (in the installation year), plus any O&M costs, is divided by the amount of energy produced by the system over its life-cycle. This calculation is not adjusted for the time-value of money.
+					<br /><br />
 					<?php if($use_credit) { ?>
 						* This figure represents the total system cost after applying the 30% Fed Tax Credit.<br /><br />
 					<?php } ?>
-					1) &quot;Levelized Value of Solar Energy&quot; is the approximation of the average $/kWh value of energy produced from the quoted system. The system net cost (in the installation year), plus any O&M costs, is divided by the amount of energy produced by the system over its life-cycle. This calculation is not adjusted for the time-value of money.
-					<br /><br />
-					<!-- 2) &quot;Average Annual Utility Savings&quot; is the average annual utility bill savings expected across the system life. This takes into account utility rate inflation and any expected degradation in system performance. This estimate has not assumed any changes in the amount or timing in your building`s energy use.
-					<br /><br /> -->
 					2) &quot;Internal Rate of Return (IRR)&quot; is the rate of return (annual compounded) that the cash flows bring based upon the amount of capital invested upon installation. If you financed your system 100%, IRR does not apply since you did not invest your capital.
 					<br /><br />
-					&spades; &quot;post-tax IRR&quot;: Since the yield is based off of energy cost savings from solar PV the investment is inherently tax free. Therefore we classify the return as a post-tax return.
+					3) &quot;tax-free IRR&quot;: Since the yield is based off of energy cost savings from Solar PV, the investment is inherently tax-free. For comparison purposes, this could be considered the post-tax return. Returns on other types of investments are often quoted as a pre-tax return. Therefore, in order to do an "apples to apples" comparison of your solar investment to other investment options, you will have to take into account your tax bracket percentage.
 					<br /><br />
-					&dagger; &quot;pre-tax IRR&quot;: Returns on other types of investments are often quoted as a "pre-tax" percentage. Therefore in order to compare your solar system to other investment options we have determined the "pre-tax" return on investment.
-					<!-- 3) &quot;Total Life-Cycle Payback&quot; is the rate of return % the invested Net Cost (in the installation year) yields over the systems expected life. This calculation is not adjusted for the time-value of money. -->
+					&dagger; This figure includes an inverter replacement at year 15.
 				</td>
 			</tr>
 		</tfoot>
