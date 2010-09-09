@@ -455,7 +455,7 @@ for($i=0;$i<count($rebate_descs_abl);$i++) {
 	}
 }
 // final cost
-$fees_html .= "<tr><td class='".$row_color[($c+1)%2]." round-l'>Final Cost To You</td><td align='right' class='".$row_color[($c+1)%2]." round-r' style='font-weight:bold;'>$".$f->cus_after_credit."</td></tr>";
+if(count($rebate_descs_abl)>0) $fees_html .= "<tr><td class='".$row_color[($c+1)%2]." round-l'>Final Cost To You</td><td align='right' class='".$row_color[($c+1)%2]." round-r' style='font-weight:bold;'>$".$f->cus_after_credit."</td></tr>";
 // materials
 $materials_html = "";
 $print_materials_html = "";

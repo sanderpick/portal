@@ -88,7 +88,7 @@ $analysis->finish();
 				<td align="right">-&nbsp;&nbsp;$<?php echo number_format($analysis->total_elec_bill_solar); ?></td>
 			</tr>
 			<tr class="dark">
-				<td>Your total energy cost savings from solar over 30 years</td>
+				<td>30 Year Solar Savings</td>
 				<td align="right">=&nbsp;&nbsp;$<?php echo number_format($analysis->elec_savings); ?></td>
 			</tr>
 			<?php $bc = "light"; if($analysis->total_sorec_rev!=0) { ?>

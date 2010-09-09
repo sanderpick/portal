@@ -231,12 +231,12 @@ $.fn.visualize = function(options, container){
 			        var leftRight = (labelx > centerx) ? 'right' : 'left';
 			        var topBottom = (labely > centery) ? 'bottom' : 'top';
 			        var percentage = Math.round(fraction*100);
-			        if(percentage){
+			        if(percentage!==false){
 				        var labeltext = $('<span class="visualize-label">' + percentage + '%</span>')
 				        	.css(leftRight, 0)
 				        	.css(topBottom, 0);
-				        	if(labeltext)
-				        var label = $('<li class="visualize-label-pos"></li>')
+				        if(labeltext && percentage > 4)
+				        	var label = $('<li class="visualize-label-pos"></li>')
 				       			.appendTo(labels)
 				        		.css({left: labelx, top: labely})
 				        		.append(labeltext);	
@@ -248,6 +248,7 @@ $.fn.visualize = function(options, container){
 						// swp
 						var desc = $(".visualize-key li",self[0].parentNode)[i];
 						var desctext = $(".visualize-key-label",desc);
+						if(percentage <= 4) desctext.text(desctext.text() + " " + percentage + "%")
 						desctext.css('font-size', 9);
 						var descx = Math.round(centerx + Math.sin(sliceMiddle * Math.PI * 2) * (radius));
 						var descy = Math.round(centery - Math.cos(sliceMiddle * Math.PI * 2) * (radius));
