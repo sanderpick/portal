@@ -7,8 +7,9 @@ switch($tld[1]) {
 		$EINSTEIN_LOC = "../estimator/";
 		$EINSTEIN_URI = $EINSTEIN_LOC;
 		break;
-	default : 
-		$EINSTEIN_LOC = "../einstein.cleanenergysolutionsinc.com/"; 
+	default :
+		if($host=='einstein-beta.cleanenergysolutionsinc.com') $EINSTEIN_LOC = "../einstein-beta.cleanenergysolutionsinc.com/";
+		else $EINSTEIN_LOC = "../einstein.cleanenergysolutionsinc.com/";
 		$EINSTEIN_URI = "http://einstein.cleanenergysolutionsinc.com/";
 		break;
 }
