@@ -382,7 +382,7 @@ for($i=0;$i<count($inverter_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
 	$c++;
 }
-if($connections_price+$f->misc_materials>0) {
+if($connections_price+$f->misc_materials!=0) {
 	$misc_desc = "";
 	if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, ";
 	$misc_desc .= $connections_desc!="" ? $connections_desc.", " : "";
