@@ -279,8 +279,9 @@ foreach($inverters as $in) {
 	$m->getRow("es_inverters",$in,"inv_model_num");
 	$inverter_qntys[] = 1;
 	$inverter_descs[] = $m->lastData()->inv_desc;
-	$inverter_prices[] = $m->lastData()->inv_price + $m->lastData()->inv_price*$off->off_inventory_up*0.01;
-	$total_inverter_price += $m->lastData()->inv_price + $m->lastData()->inv_price*$off->off_inventory_up*0.01;
+	$inverter_price = $m->lastData()->inv_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
+	$inverter_prices[] = $inverter_price;
+	$total_inverter_price += $inverter_price;
 }
 // add modules if duplicate
 for($i=0;$i<count($module_descs);$i++) {
@@ -370,15 +371,15 @@ if($use_credit) {
 $components_html = "";
 $c = 0;
 for($i=0;$i<count($module_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$module_qntys[$i]."</td><td class='ex'>x</td><td>".$module_descs[$i]."</td><td align='right'>$".number_format($module_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$module_qntys[$i]."</td><td class='ex'></td><td>".$module_descs[$i]."</td><td align='right'>$".number_format($module_prices[$i])."</td></tr>";
 	$c++;
 }
 for($i=0;$i<count($mounting_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])." (ft.)</td><td class='ex'>x</td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])." (ft.)</td><td class='ex'></td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
 	$c++;
 }
 for($i=0;$i<count($inverter_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'>x</td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
 	$c++;
 }
 if($connections_price+$f->misc_materials>0) {
@@ -392,7 +393,7 @@ if($connections_price+$f->misc_materials>0) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($connections_price+$f->misc_materials)."</td></tr>";
 	$c++;
 }
-$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>1</td><td class='ex'>x</td><td>FREE LightGauge Data Monitoring System</td><td align='right'>$0</td></tr>";
+$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>1</td><td class='ex'></td><td>FREE LightGauge Data Monitoring System</td><td align='right'>$0</td></tr>";
 $c++;
 $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
 // labor lines
