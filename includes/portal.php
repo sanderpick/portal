@@ -77,20 +77,22 @@ $pro_pvwatts = array(array_fill(0,13,0),array_fill(0,13,0),array_fill(0,13,0));
 $module_qntys = array();
 $module_descs = array();
 $module_prices = array();
+// racking
+$racking_qntys = array();
+$racking_descs = array();
+$racking_prices = array();
 // mounting
 $mounting_qntys = array();
 $mounting_descs = array();
 $mounting_prices = array();
-// rebate
+// rebate - above total
 $rebate_types_bbl = array();
 $rebate_descs_bbl = array();
 $rebate_prices_bbl = array();
+// rebates - below total
 $rebate_types_abl = array();
 $rebate_descs_abl = array();
 $rebate_prices_abl = array();
-// connections
-$connections_desc = "";
-$connections_price = 0;
 // layout images on names
 $layout_html = "";
 $print_layout_html = "";
@@ -159,18 +161,20 @@ foreach($zones as $zone) {
 	$m->getRow("es_modules",$zone->zon_module,"mod_model_num");
 	$module_descs[] = $m->lastData()->mod_desc;
 	$module_prices[] = $zone->zon_module_price;
-	// mounting
-	$mounting_qntys[] = $zone->zon_racking_length;
+	// racking
+	$racking_qntys[] = $zone->zon_racking_length;
 	$m->getRow("es_racking",$zone->zon_racking,"rac_model_num");
-	$mounting_descs[] = $m->lastData()->rac_desc;
-	$mounting_prices[] = $zone->zon_racking_price;
+	$racking_descs[] = $m->lastData()->rac_desc;
+	$racking_prices[] = $zone->zon_racking_price;
+	// mounting
+	$mounting_qntys[] = $zone->zon_num_connections;
+	$m->getRow("es_mounting_methods",$zone->zon_mounting_method,"met_value");
+	$mounting_descs[] = $m->lastData()->met_desc;
+	$mounting_prices[] = $zone->zon_connection_price;
 	// rebate
 	$rebate_types_bbl[] = "@ $".(floor($zone->zon_rebate / $zone->zon_size / 10)/100)." / Watt";
 	$rebate_descs_bbl[] = $zone->zon_rebate_desc;
 	$rebate_prices_bbl[] = $zone->zon_rebate;
-	// add to misc materials
-	$connections_price += $zone->zon_connection_price;
-	if($zone->zon_connection_price>0) $connections_desc = "Mounting Materials";
 	// build the layout text
 	if($m->getRow("es_uploads",$zone->zon_layout)) {
 		$i_url = $EINSTEIN_URI.$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
@@ -283,6 +287,25 @@ foreach($inverters as $in) {
 	$inverter_prices[] = $inverter_price;
 	$total_inverter_price += $inverter_price;
 }
+// monitors
+$monitors = explode(",",substr($pro->pro_data_monitors,0,-1));
+$monitor_types = explode(",",substr($pro->pro_data_monitor_types,0,-1));
+$monitor_qntys = array();
+$monitor_descs = array();
+for($i=0;$i<count($monitors);$i++) {
+	$m->getRow("es_data_monitoring",$monitors[$i],"dat_model_num");
+	$monitor_qntys[] = 1;
+	switch($monitor_types[$i]) {
+		case 1 :
+			$monitor_descs[] = "FREE ".$m->lastData()->dat_desc;
+			$monitor_prices[] = 0;
+			break;
+		case 0 :
+			$monitor_descs[] = $m->lastData()->dat_desc;
+			$monitor_prices[] = $m->lastData()->dat_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
+			break;
+	}
+}
 // add modules if duplicate
 for($i=0;$i<count($module_descs);$i++) {
 	for($j=0;$j<count($module_descs);$j++) {
@@ -298,6 +321,21 @@ for($i=0;$i<count($module_descs);$i++) {
 $module_descs = array_values(array_filter($module_descs,"strlen"));
 $module_qntys = array_values(array_filter($module_qntys,"strlen"));
 $module_prices = array_values(array_filter($module_prices,"strlen"));
+// add racking if duplicate
+for($i=0;$i<count($racking_descs);$i++) {
+	for($j=0;$j<count($racking_descs);$j++) {
+		if($racking_descs[$j]==$racking_descs[$i] && $i!=$j && $racking_descs[$i]!=NULL && $racking_descs[$j]!=NULL) {
+			$racking_qntys[$i] += $racking_qntys[$j];
+			$racking_prices[$i] += $racking_prices[$j];
+			$racking_descs[$j] = NULL;
+			$racking_qntys[$j] = NULL;
+			$racking_prices[$j] = NULL;
+		}
+	}
+}
+$racking_descs = array_values(array_filter($racking_descs,"strlen"));
+$racking_qntys = array_values(array_filter($racking_qntys,"strlen"));
+$racking_prices = array_values(array_filter($racking_prices,"strlen"));
 // add mounting if duplicate
 for($i=0;$i<count($mounting_descs);$i++) {
 	for($j=0;$j<count($mounting_descs);$j++) {
@@ -328,6 +366,21 @@ for($i=0;$i<count($inverter_descs);$i++) {
 $inverter_descs = array_values(array_filter($inverter_descs,"strlen"));
 $inverter_qntys = array_values(array_filter($inverter_qntys,"strlen"));
 $inverter_prices = array_values(array_filter($inverter_prices,"strlen"));
+// add monitor if duplicate
+for($i=0;$i<count($monitor_descs);$i++) {
+	for($j=0;$j<count($monitor_descs);$j++) {
+		if($monitor_descs[$j]==$monitor_descs[$i] && $i!=$j && $monitor_descs[$i]!=NULL && $monitor_descs[$j]!=NULL) {
+			$monitor_qntys[$i] += $monitor_qntys[$j];
+			$monitor_prices[$i] += $monitor_prices[$j];
+			$monitor_descs[$j] = NULL;
+			$monitor_qntys[$j] = NULL;
+			$monitor_prices[$j] = NULL;
+		}
+	}
+}
+$monitor_descs = array_values(array_filter($monitor_descs,"strlen"));
+$monitor_qntys = array_values(array_filter($monitor_qntys,"strlen"));
+$monitor_prices = array_values(array_filter($monitor_prices,"strlen"));
 // parse additional rebates
 $add_rebate_types = explode(",",substr($pro->pro_rebate_type,0,-1));
 $add_rebate_descs = explode(",",substr($pro->pro_rebate_desc,0,-1));
@@ -374,27 +427,32 @@ for($i=0;$i<count($module_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$module_qntys[$i]."</td><td class='ex'></td><td>".$module_descs[$i]."</td><td align='right'>$".number_format($module_prices[$i])."</td></tr>";
 	$c++;
 }
+for($i=0;$i<count($racking_qntys);$i++) {
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($racking_qntys[$i])." (ft.)</td><td class='ex'></td><td>".$racking_descs[$i]."</td><td align='right'>$".number_format($racking_prices[$i])."</td></tr>";
+	$c++;
+}
 for($i=0;$i<count($mounting_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])." (ft.)</td><td class='ex'></td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])."</td><td class='ex'></td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
 	$c++;
 }
 for($i=0;$i<count($inverter_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
 	$c++;
 }
-if($connections_price+$f->misc_materials!=0) {
+if($f->misc_materials!=0) {
 	$misc_desc = "";
-	if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, ";
-	$misc_desc .= $connections_desc!="" ? $connections_desc.", " : "";
-	if($pro->pro_misc_materials>0 && $pro->pro_misc_materials_desc!="") $misc_desc .= $pro->pro_misc_materials_desc.", ";
-	else if($pro->pro_misc_materials>0) $misc_desc .= "Other Materials, ";
+	if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, Wire, Misc. Electrical Supplies, ";
+	if($pro->pro_misc_materials!=0 && $pro->pro_misc_materials_desc!="") $misc_desc .= $pro->pro_misc_materials_desc.", ";
+	else if($pro->pro_misc_materials!=0) $misc_desc .= "Misc. Materials, ";
 	$misc_desc = substr($misc_desc,0,-2);
 	if($misc_desc=="") $misc_desc = "Misc. Materials";
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($connections_price+$f->misc_materials)."</td></tr>";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($f->misc_materials)."</td></tr>";
 	$c++;
 }
-$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>1</td><td class='ex'></td><td>FREE LightGauge Data Monitoring System</td><td align='right'>$0</td></tr>";
-$c++;
+for($i=0;$i<count($monitor_qntys);$i++) {
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$monitor_qntys[$i]."</td><td class='ex'></td><td>".$monitor_descs[$i]."</td><td align='right'>$".number_format($monitor_prices[$i])."</td></tr>";
+	$c++;
+}
 $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
 // labor lines
 $labor_html = "";
