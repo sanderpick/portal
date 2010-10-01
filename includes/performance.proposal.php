@@ -212,8 +212,7 @@
 		</table>
 	</div>
 	<div class="vis vis-bar-performance performance-graphs">
-		<table>
-			<br />
+		<table>	
 			<caption>– Available Energy Value –</caption>
 			<thead>
 				<tr>
