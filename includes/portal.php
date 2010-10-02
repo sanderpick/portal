@@ -277,6 +277,7 @@ foreach($zones as $zone) {
 $inverters = explode(",",substr($pro->pro_inverter,0,-1));
 $inverter_qntys = array();
 $inverter_descs = array();
+$inverter_prices = array();
 $total_inverter_price = 0;
 foreach($inverters as $in) {
 	if(strpos($in,"_g_")!==FALSE) $in = substr($in,0,strpos($in,"_g_"));
@@ -292,18 +293,20 @@ $monitors = explode(",",substr($pro->pro_data_monitors,0,-1));
 $monitor_types = explode(",",substr($pro->pro_data_monitor_types,0,-1));
 $monitor_qntys = array();
 $monitor_descs = array();
+$monitor_prices = array();
 for($i=0;$i<count($monitors);$i++) {
-	$m->getRow("es_data_monitoring",$monitors[$i],"dat_model_num");
-	$monitor_qntys[] = 1;
-	switch($monitor_types[$i]) {
-		case 1 :
-			$monitor_descs[] = "FREE ".$m->lastData()->dat_desc;
-			$monitor_prices[] = 0;
-			break;
-		case 0 :
-			$monitor_descs[] = $m->lastData()->dat_desc;
-			$monitor_prices[] = $m->lastData()->dat_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
-			break;
+	if($m->getRow("es_data_monitoring",$monitors[$i],"dat_model_num")) {
+		$monitor_qntys[] = 1;
+		switch($monitor_types[$i]) {
+			case 1 :
+				$monitor_descs[] = "FREE ".$m->lastData()->dat_desc;
+				$monitor_prices[] = 0;
+				break;
+			case 0 :
+				$monitor_descs[] = $m->lastData()->dat_desc;
+				$monitor_prices[] = $m->lastData()->dat_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
+				break;
+		}
 	}
 }
 // add modules if duplicate
