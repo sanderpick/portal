@@ -48,7 +48,7 @@ caption, .caption { padding:5px 8px 3px; text-align:left; text-transform:upperca
 .prop-header-txt { color:#666; text-transform:uppercase; font-size:8px; line-height:11px; }
 .prepared { font-size:13px; color:#333; line-height:16px; text-transform:none; }
 
-.pie-back { border-radius:0 0 5px 5px; -moz-border-radius:0 0 5px 5px; -khtml-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; width:650px; }
+.pie-back { border-radius:0 0 5px 5px; -moz-border-radius:0 0 5px 5px; -khtml-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; width:650px; background:#fcfcfc; }
 
 tbody.tabled { border-top:1px solid #ccc; }
 
@@ -111,6 +111,7 @@ td div.cell-round p {
 
 .prop-section {  }
 .bind-section { display:none; }
+.bind-section td { vertical-align:top; }
 
 /*–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
 

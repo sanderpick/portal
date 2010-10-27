@@ -47,102 +47,116 @@
 		<thead>
 			<tr>
 				<th align="left">Month</th>
-				<th align="left">AC Energy Usage (kWh)</th>
 				<th align="right">Solar Radiation (kWh/m<span class="super">2</span>/day)</th>
+				<th align="right">AC Energy Usage (kWh)</th>
 				<th align="right">AC Energy Output (kWh)</th>
+				<th align="right">% System Contribution</th>
 				<th align="right">Energy Output Value ($)</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="dark">
 				<td>Jan</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_1) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][0]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][0]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_1) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][0]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][0]/$job->job_bill_1)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][0]; ?></td>
 			</tr>
 			<tr class="light">
 				<td>Feb</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_2) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][1]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][1]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_2) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][1]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][1]/$job->job_bill_2)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][1]; ?></td>
 			</tr>
 			<tr class="dark">
 				<td>Mar</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_3) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][2]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][2]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_3) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][2]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][2]/$job->job_bill_3)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][2]; ?></td>
 			</tr>
 			<tr class="light">
 				<td>Apr</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_4) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][3]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][3]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_4) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][3]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][3]/$job->job_bill_4)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][3]; ?></td>
 			</tr>
 			<tr class="dark">
 				<td>May</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_5) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][4]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][4]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_5) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][4]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][4]/$job->job_bill_5)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][4]; ?></td>
 			</tr>
 			<tr class="light">
 				<td>Jun</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_6) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][5]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][5]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_6) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][5]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][5]/$job->job_bill_6)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][5]; ?></td>
 			</tr>
 			<tr class="dark">
 				<td>Jul</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_7) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][6]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][6]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_7) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][6]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][6]/$job->job_bill_7)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][6]; ?></td>
 			</tr>
 			<tr class="light">
 				<td>Aug</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_8) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][7]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][7]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_8) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][7]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][7]/$job->job_bill_8)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][7]; ?></td>
 			</tr>
 			<tr class="dark">
 				<td>Sep</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_9) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][8]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][8]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_9) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][8]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][8]/$job->job_bill_9)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][8]; ?></td>
 			</tr>
 			<tr class="light">
 				<td>Oct</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_10) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][9]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][9]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_10) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][9]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][9]/$job->job_bill_10)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][9]; ?></td>
 			</tr>
 			<tr class="dark">
 				<td>Nov</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_11) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][10]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][10]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_11) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][10]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][10]/$job->job_bill_11)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][10]; ?></td>
 			</tr>
 			<tr class="light">
 				<td>Dec</td>
-				<td><?php echo $draw_bill ? number_format($job->job_bill_12) : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[0][11]; ?></td>
-				<td align="right"><?php echo $pro_pvwatts[1][11]; ?></td>
+				<td align="right"><?php echo $draw_bill ? number_format($job->job_bill_12) : "-"; ?></td>
+				<td align="right"><?php echo number_format($pro_pvwatts[1][11]); ?></td>
+				<td align="right"><?php echo $draw_bill ? round(10000*$pro_pvwatts[1][11]/$job->job_bill_12)/100 : "-"; ?></td>
 				<td align="right"><?php echo $pro_pvwatts[2][11]; ?></td>
 			</tr>
 			<tr>
 				<td class="big darker round-l">Year</td>
-				<td class="big darker"><?php echo $draw_bill ? number_format($job_bill_total)." kWh" : "-"; ?></td>
 				<td align="right" class="big darker"><?php echo $pro_pvwatts[0][12]; ?> <span style="font-size:12px;">kWh/m<span class="super">2</span>/day</span></td>
+				<td align="right" class="big darker"><?php echo $draw_bill ? number_format($job_bill_total)." kWh" : "-"; ?></td>
 				<td align="right" class="big darker"><?php echo number_format($pro_pvwatts[1][12]); ?> kWh</td>
+				<td align="right" class="big darker"><?php echo $draw_bill ? (round(10000*$pro_pvwatts[1][12]/$job_bill_total)/100)."%" : "-"; ?></td>
 				<td align="right" class="big darker round-r">$<?php echo number_format($pro_pvwatts[2][12]); ?></td>
 			</tr>
 		</tbody>
@@ -156,8 +170,7 @@
 		</tfoot>
 	</table>
 	<br /><br />
-	<div class="vis vis-area performance-graphs">
-		<?php if($draw_bill) echo ""; ?>
+	<div class="vis vis-area performance-graphs bill-comparison">
 		<table>
 			<caption>– Electricity Usage Comparison (estimate) –</caption>
 			<thead>
@@ -211,6 +224,7 @@
 			</tbody>
 		</table>
 	</div>
+	<?php if($draw_bill) echo "<br />"; ?>
 	<div class="vis vis-bar-performance performance-graphs">
 		<table>	
 			<caption>– Available Energy Value –</caption>

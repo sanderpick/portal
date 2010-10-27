@@ -29,7 +29,8 @@ $.fn.visualize = function(options, container){
 			yLabelInterval: 30, //distance between y labels
 			yLabelPre: "",
 			yLabelPost: "",
-			xTitle: ""
+			xTitle: "",
+			altColor:false
 		},options);
 		
 		//reset width, height to numbers
@@ -412,7 +413,7 @@ $.fn.visualize = function(options, container){
 				var incX = -3.5;
 				//iterate and draw
 				for(var h=0; h<dataGroups.length; h++){
-					ctx.beginPath();
+					if(!o.altColor) ctx.beginPath();
 					var linewidth = (xInterval-o.barGroupMargin*2) / dataGroups.length; //removed +1 
 					var strokeWidth = linewidth - (o.barMargin*2);
 					if(strokeWidth<7) strokeWidth = 7;
@@ -420,16 +421,24 @@ $.fn.visualize = function(options, container){
 					
 					var points = dataGroups[h].points;
 					var integer = 0;
-					for(var i=0; i<points.length; i++){
+					for(var i=0; i<points.length; i++) {
+						if(o.altColor) ctx.beginPath();
 						var xVal = (integer-o.barGroupMargin)+(h*linewidth)+linewidth/2;
 						xVal += o.barGroupMargin*2;
 						ctx.moveTo(xVal+incX, 0);
 						ctx.lineTo(xVal+incX, Math.round(-points[i]*yScale));
 						integer+=xInterval;
+						if(o.altColor) {
+							ctx.strokeStyle = points[i] > 0 ? o.colors[1] : o.colors[0];
+							ctx.stroke();
+							ctx.closePath();
+						}
 					}
-					ctx.strokeStyle = dataGroups[h].color;
-					ctx.stroke();
-					ctx.closePath();
+					if(!o.altColor) {
+						ctx.strokeStyle = dataGroups[h].color;
+						ctx.closePath();
+						ctx.stroke();
+					}
 					incX += 8;
 				}
 			}

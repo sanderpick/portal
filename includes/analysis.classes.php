@@ -57,7 +57,7 @@ class SolarAnalysis {
 		$this->sys_tax_brac = $sys_tax_brac;
 		$this->sys_inverter = $sys_inverter;
 		// vars
-		$this->sys_inverter_half_life = 0.6 * $this->sys_inverter;
+		$this->sys_inverter_half_life = $this->sys_inverter > 10000 ? 0.2 * $this->sys_inverter : 0.6 * $this->sys_inverter;
 		$this->total_output = 0;
 		$this->total_savings = 0;
 		$this->total_elec_bill_no_solar = 0;

@@ -3,7 +3,7 @@
 	<div class="system-graphs">
 		<span class="caption">Cost Breakdown:</span>
 		<div class="pie-back">
-			<div style="width:50%; float:left; padding:0 0 0 60px;">
+			<div style="width:50%; float:left; padding:0 0 0 80px;">
 				<div class="vis vis-pie">
 					<table>
 						<caption>Cost Breakdown:</caption>
@@ -16,11 +16,11 @@
 						<tbody>
 							<tr>
 								<th>Labor</th>
-								<td><?php echo $f->install_labor_nf; ?></td>
+								<td><?php echo $f->install_labor; ?></td>
 							</tr>
 							<tr>
 								<th>Taxes &amp; Fees</th>
-								<td><?php echo $f->tax_nf + $f->fees_total; ?></td>
+								<td><?php echo $f->tax + $f->fees_total; ?></td>
 							</tr>
 							<tr>
 								<th>Materials</th>
@@ -30,7 +30,7 @@
 					</table>
 				</div>
 			</div>
-			<div style="margin:0 0 0 50%; width:50%; padding:0 0 0 60px;">
+			<div style="margin:0 0 0 50%; width:50%; padding:0 0 0 80px;">
 				<div class="vis vis-pie">
 					<table>
 						<caption>Cost Breakdown:</caption>
@@ -44,16 +44,16 @@
 							<?php if($use_credit) { ?>
 							<tr>
 								<th>Your Cost</th>
-								<td><?php echo $f->cus_after_credit_nf; ?></td>
+								<td><?php echo $f->cus_after_credit; ?></td>
 							</tr>
 							<tr>
 								<th>30% Federal Tax Credit</th>
-								<td><?php echo $f->credit_nf; ?></td>
+								<td><?php echo $f->credit; ?></td>
 							</tr>
 							<?php } else { ?>	
 							<tr>
 								<th>Your Cost</th>
-								<td><?php echo $f->cus_price_nf; ?></td>
+								<td><?php echo $f->cus_price; ?></td>
 							</tr>
 							<?php } ?>
 							<tr>
@@ -66,7 +66,7 @@
 			</div>
 			<div class="clear"></div>
 		</div>
-		<br /><br />
+		<br />
 	</div>
 	<table>
 		<caption>Materials Detail:</caption>

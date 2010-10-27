@@ -16,7 +16,8 @@ $rep = $m->lastData();
 $m->getRow("es_customers",$pro->pro_customerID);
 $cus = $m->lastData();
 // get the jobs info
-$m->getRow("es_jobs",$pro->pro_jobID);
+$job_table = $pro->pro_published ? "es_jobs_s" : "es_jobs";
+$m->getRow($job_table,$pro->pro_jobID);
 $job = $m->lastData();
 // for avatar
 $customer_name = $cus->cus_name_first." ".$cus->cus_name_last;
@@ -52,13 +53,13 @@ $cover_letter = str_replace("\n","<br />",$pro->pro_cover_letter);
 $cover_letter = str_replace('"','&quot;',$cover_letter);
 $cover_letter = str_replace("'","&#39;",$cover_letter);
 $cover_letter = str_replace("#amp;","&",$cover_letter);
-$cover_letter = "Dear ".$job_title.",<br /><br />".$cover_letter;
-$cover_letter .= ($pro->pro_incentive==1) ? "<br /><br />This system will generate a recurring revenue of approximately $".$incentive_revenue." annually for ".$pro->pro_incentive_yrs." years.": "";
-$cover_letter .= "<br /><br />Yours truly,<br />".$rep->rep_name_first." ".$rep->rep_name_last.", <em>".$rep->rep_title."</em><br /><br />";
-$cover_letter .= "<a href='".$LHS_LOC."' target='_blank'><strong>Lighthouse</strong>solar</a><br />";
-$cover_letter .= $off->off_city.", ".$off->off_state." ".$off->off_zip."<br />";
-$cover_letter .= "<a href='mailto:".$rep->rep_email."'>".$rep->rep_email."</a> (e)<br />";
-$cover_letter .= $rep->rep_phone!="" ? $rep->rep_phone." (p)" : $off->off_phone." (p)";
+// $cover_letter = "Dear ".$job_title.",<br /><br />".$cover_letter;
+// $cover_letter .= ($pro->pro_incentive==1) ? "<br /><br />This system will generate a recurring revenue of approximately $".$incentive_revenue." annually for ".$pro->pro_incentive_yrs." years.": "";
+// $cover_letter .= "<br /><br />Yours truly,<br />".$rep->rep_name_first." ".$rep->rep_name_last.", <em>".$rep->rep_title."</em><br /><br />";
+// $cover_letter .= "<a href='".$LHS_LOC."' target='_blank'><strong>Lighthouse</strong>solar</a><br />";
+// $cover_letter .= $off->off_city.", ".$off->off_state." ".$off->off_zip."<br />";
+// $cover_letter .= "<a href='mailto:".$rep->rep_email."'>".$rep->rep_email."</a> (e)<br />";
+// $cover_letter .= $rep->rep_phone!="" ? $rep->rep_phone." (p)" : $off->off_phone." (p)";
 // overwrite incentive for financials
 $pro->pro_incentive_rate = $pro->pro_incentive==1 ? $pro->pro_incentive_rate : 0;
 // get the zones
@@ -66,8 +67,9 @@ $zoneIDs = explode(",",substr($pro->pro_zones,0,-1));
 $pro_num_zones = count($zoneIDs);
 $pro_num_modules = 0;
 $zones = array();
+$zone_table = $pro->pro_published ? "es_zones_s" : "es_zones";
 foreach($zoneIDs as $zoneID) {
-	$m->getRow("es_zones",$zoneID);
+	$m->getRow($zone_table,$zoneID);
 	$zones[] = $m->lastData();
 	$pro_num_modules += $m->lastData()->zon_num_modules;
 }
@@ -178,6 +180,12 @@ foreach($zones as $zone) {
 	// build the layout text
 	if($m->getRow("es_uploads",$zone->zon_layout)) {
 		$i_url = $EINSTEIN_URI.$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_800.jpg";
+		$ip_url = $EINSTEIN_URI.$m->lastData()->up_root.$m->lastData()->up_handle."/".$m->lastData()->up_handle."_sized_tall.jpg";
+		if(file_exists($ip_url)) $have_ip = TRUE;
+		else {
+			$have_ip = FALSE;
+			$ip_url = $i_url;
+		}
 		$layout_html .= "<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span><img src='".$i_url."' width='650' class='layout-img' alt='Zone Layout' /><br /><br />";
 		$print_layout_html .= "<div style='page-break-before:always;' class='fake-break'></div>";
 		$print_layout_html .= '<div class="proposal-head">
@@ -221,7 +229,7 @@ foreach($zones as $zone) {
 									<tr>
 										<td style='padding:0;' colspan='2'>
 											<span class='caption'>".$zone->zon_name." – ".$zone->zon_size."kW System Layout</span>
-											<img src='".$i_url."' width='650' class='layout-img' alt='Zone Layout' /><br /><br />
+											<img src='".$ip_url."' width='".($have_ip ? "" : 650)."' class='layout-img' alt='Zone Layout' /><br /><br />
 										</td>
 									</tr>
 									<tr><td style='padding:0;' colspan='1'>&nbsp;</td></tr>
@@ -266,10 +274,12 @@ foreach($zones as $zone) {
 	$install_params .= "<td>Azimuth</td>";
 	$install_params .= "<td align='right'>".$zone->zon_azimuth."º</td>";
 	$install_params .= "</tr>";
-	$install_params .= "<tr>";
-	$install_params .= "<td class='big darker round-l'>Portion of total System Energy Production</td>";
-	$install_params .= "<td align='right' class='big darker round-r'>".(round($zone->zon_production / $f->production * 10000)/100)."%</td>";
-	$install_params .= "</tr>";
+	if($pro_num_zones > 1) {
+		$install_params .= "<tr>";
+		$install_params .= "<td class='big darker round-l'>Portion of total System Energy Production</td>";
+		$install_params .= "<td align='right' class='big darker round-r'>".(round($zone->zon_production / $f->production * 10000)/100)."%</td>";
+		$install_params .= "</tr>";
+	}
 	$install_params .= "</tbody>";
 	$install_params .= "</table>";
 }
@@ -398,7 +408,7 @@ for($i=0;$i<count($add_rebate_types);$i++) {
 				break;
 			case 1 :
 				$rt = "@ ".$add_rebate_amnts[$i]."% System Price";
-				$rp = $add_rebate_amnts[$i]*$f->price_nf*0.01;
+				$rp = $add_rebate_amnts[$i]*$f->price*0.01;
 				break;
 			case 2 :
 				$rt = "@ Fixed Amount";
@@ -420,7 +430,7 @@ for($i=0;$i<count($add_rebate_types);$i++) {
 $use_credit = $f->credit!=0 ? TRUE : FALSE;
 if($use_credit) {
 	$rebate_types_abl[] = "";
-	$rebate_prices_abl[] = $f->credit_nf;
+	$rebate_prices_abl[] = $f->credit;
 	$rebate_descs_abl[] = "30% Federal Tax Credit*";
 }
 // components lines
@@ -460,14 +470,14 @@ $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials To
 // labor lines
 $labor_html = "";
 $c = 0;
-$labor_html .= "<tr class='dark'><td>PV System – Installation Labor</td><td align='right'>$".$f->install_labor."</td></tr>";
+$labor_html .= "<tr class='dark'><td>PV System – Installation Labor</td><td align='right'>$".number_format($f->install_labor)."</td></tr>";
 $c++;
-$labor_html .= "<tr><td class='big darker round-l'>Labor Total</td><td align='right' class='big darker round-r'>$".$f->install_labor."</td></tr>";
+$labor_html .= "<tr><td class='big darker round-l'>Labor Total</td><td align='right' class='big darker round-r'>$".number_format($f->install_labor)."</td></tr>";
 // fees lines
 $fees_html = "";
 $c = 0;
 if($f->permit!=0) {
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Permit Fees</td><td align='right'>$".$f->permit."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Permit Fees</td><td align='right'>$".number_format($f->permit)."</td></tr>";
 	$c++;
 }
 if($pro->pro_engin_fee!=0) {
@@ -482,7 +492,7 @@ if($pro->pro_extra_fee!=0) {
 	$c++;
 }
 if($f->equip!=0) {
-	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Equipment Rental Fees</td><td align='right'>$".$f->equip."</td></tr>";
+	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Equipment Rental Fees</td><td align='right'>$".number_format($f->equip)."</td></tr>";
 	$c++;
 }
 if($pro->pro_inspection!=0) {
@@ -501,11 +511,11 @@ if($pro->pro_discount!=0) {
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Discount ".$pro->pro_discount_desc."</td><td class='red-txt' align='right'>-&nbsp&nbsp$".number_format($pro->pro_discount)."</td></tr>";
 	$c++;
 }
-$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Subtotal</td><td align='right'>$".$f->subtotal."</td></tr>";
+$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Subtotal</td><td align='right'>$".number_format($f->subtotal)."</td></tr>";
 $c++;
-$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Sales Tax</td><td align='right'>$".$f->tax."</td></tr>";
+$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Sales Tax</td><td align='right'>$".number_format($f->tax)."</td></tr>";
 $c++;
-$fees_html .= "<tr><td class='big darker round-l'>Total System Out of Pocket Cost (@ $".$f->ppw_cus_net." / Watt)</td><td class='big darker round-r' align='right'>$".$f->cus_price."</td></tr>";
+$fees_html .= "<tr><td class='big darker round-l'>Total System Out of Pocket Cost (@ $".$f->ppw_cus_net." / Watt)</td><td class='big darker round-r' align='right'>$".number_format($f->cus_price)."</td></tr>";
 // rebates after out of pocket
 $c = 1;
 for($i=0;$i<count($rebate_descs_abl);$i++) {
@@ -517,7 +527,7 @@ for($i=0;$i<count($rebate_descs_abl);$i++) {
 	}
 }
 // final cost
-if(count($rebate_descs_abl)>0) $fees_html .= "<tr><td class='".$row_color[($c+1)%2]." round-l'>Final Cost To You</td><td align='right' class='".$row_color[($c+1)%2]." round-r' style='font-weight:bold;'>$".$f->cus_after_credit."</td></tr>";
+if(count($rebate_descs_abl)>0) $fees_html .= "<tr><td class='".$row_color[($c+1)%2]." round-l'>Final Cost To You</td><td align='right' class='".$row_color[($c+1)%2]." round-r' style='font-weight:bold;'>$".number_format($f->cus_after_credit)."</td></tr>";
 // materials
 $materials_html = "";
 $print_materials_html = "";
