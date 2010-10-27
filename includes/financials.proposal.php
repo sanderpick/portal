@@ -1,12 +1,12 @@
 <?php
 // build the financials
 require_once("analysis.classes.php");
-// $analysis = new SolarAnalysis(5.50,6992,0.0098,20369,0.066,0.12,30,10000,0,0,0.30,3876);
+//$analysis = new SolarAnalysis(5.50,6992,0.0098,20369,0.066,0.12,30,10000,0,0,0.30,3876);
 $analysis = new SolarAnalysis(
 	$f->size, // system size
 	$f->production, // system production
 	0.0098, // system derate
-	$f->cus_after_credit_nf, // system cost
+	$f->cus_after_credit, // system cost
 	0.066, // system rate increase
 	$zones[0]->zon_erate/100, // system utility price
 	30, // system term (years)
@@ -59,7 +59,7 @@ $analysis->finish();
 			</tr>
 			<tr>
 				<td class="big darker round-l">System Cost or Investment*</td>
-				<td align="right" class="big darker round-r">$<?php echo $f->cus_after_credit; ?></td>
+				<td align="right" class="big darker round-r">$<?php echo number_format($f->cus_after_credit); ?></td>
 			</tr>
 		</tbody>
 	</table>
@@ -117,6 +117,7 @@ $analysis->finish();
 					<th align="right">Utility Rate</th>
 					<th align="right">Electric Bill <br />WITHOUT Solar</th>
 					<th align="right">Electric Bill <br />WITH Solar</th>
+					<?php if($analysis->total_sorec_rev!=0) { ?><th align="right">SREC</th><?php } ?>
 					<th align="right">Annual Savings</th>
 					<th align="right">Payback on Solar Investment <br />(includes inverter replacement)</th>
 				</tr>
@@ -127,6 +128,7 @@ $analysis->finish();
 					<td align="right">&ndash;</td>
 					<td align="right">&ndash;</td>
 					<td align="right">&ndash;</td>
+					<?php if($analysis->total_sorec_rev!=0) { ?><td align="right">&ndash;</td><?php } ?>
 					<td align="right">&ndash;</td>
 					<td align="right" style="color:red;">-&nbsp;&nbsp;$<?php echo number_format($analysis->sys_cost); ?></td>
 				</tr>
@@ -140,13 +142,14 @@ $analysis->finish();
 							$cashflow = "$".number_format($analysis->annual_data[$n]->cashflow);
 							$c = "red";
 						}
-						
+						$sorec_rev = $analysis->annual_data[$n]->sorec_rev < 0 ? number_format(-$analysis->annual_data[$n]->sorec_rev) : number_format($analysis->annual_data[$n]->sorec_rev);
 						$c = $analysis->annual_data[$n]->cashflow > 0 ? "green" : "red";
 						$rows .= '<tr class="'.$bc.'">';
 						$rows .= 	'<td>'.($n+1).'</td>';
 						$rows .= 	'<td align="right">$'.(round(1000*$analysis->annual_data[$n]->utility)/1000).'</td>';
 						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->elec_bill_no_solar).'</td>';
 						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->elec_bill_solar).'</td>';
+						$rows .= 	$analysis->total_sorec_rev!=0 ? '<td align="right">$'.$sorec_rev.'</td>' : '';
 						$rows .= 	'<td align="right">$'.number_format($analysis->annual_data[$n]->total_solar_value).'</td>';
 						$rows .= 	'<td align="right" style="color:'.$c.'">'.$cashflow.'</td>';
 						$rows .= '</tr>';
@@ -159,6 +162,9 @@ $analysis->finish();
 					<td align="right" class="big darker">&nbsp;</td>
 					<td align="right" class="big darker">$<?php echo number_format($analysis->total_elec_bill_no_solar); ?></td>
 					<td align="right" class="big darker">$<?php echo number_format($analysis->total_elec_bill_solar); ?></td>
+					<?php if($analysis->total_sorec_rev!=0) { ?>
+					<td align="right" class="big darker">$<?php echo number_format($analysis->total_sorec_rev); ?></td>
+					<?php } ?>
 					<td align="right" class="big darker">$<?php echo number_format($analysis->total_savings); ?></td>
 					<td align="right" class="big darker round-r">&nbsp;</td>
 				</tr>
@@ -273,9 +279,9 @@ $analysis->finish();
 				</tr>
 			</tbody>
 		</table>
-		<!-- <br />
+		<br />
 		<table>
-			<caption>– Cumulative Utility Savings from Solar Energy –</caption>
+			<caption>– Cumulative Cashflow –</caption>
 			<thead>
 				<tr>
 					<td></td>
@@ -313,73 +319,73 @@ $analysis->finish();
 			</thead>
 			<tbody>
 				<tr>
-					<th>Cumulative Utility Savings</th>
-					<td><php echo round($analysis->annual_data[0]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[1]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[2]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[3]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[4]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[5]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[6]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[7]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[8]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[9]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[10]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[11]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[12]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[13]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[14]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[15]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[16]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[17]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[18]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[19]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[20]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[21]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[22]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[23]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[24]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[25]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[26]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[27]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[28]->cum_savings_solar); ></td>
-					<td><php echo round($analysis->annual_data[29]->cum_savings_solar); ></td>
+					<th>Cumulative Cashflow (pre-payback)</th>
+					<td><?php echo round($analysis->annual_data[0]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[1]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[2]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[3]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[4]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[5]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[6]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[7]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[8]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[9]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[10]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[11]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[12]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[13]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[14]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[15]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[16]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[17]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[18]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[19]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[20]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[21]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[22]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[23]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[24]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[25]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[26]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[27]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[28]->cashflow); ?></td>
+					<td><?php echo round($analysis->annual_data[29]->cashflow); ?></td>
 				</tr>
 				<tr>
-					<th>Solar Investment (w/ Inverter Replacement and SOREC if applicable)</th>
-					<td><php echo round($analysis->annual_data[0]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[1]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[2]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[3]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[4]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[5]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[6]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[7]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[8]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[9]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[10]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[11]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[12]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[13]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[14]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[15]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[16]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[17]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[18]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[19]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[20]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[21]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[22]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[23]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[24]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[25]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[26]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[27]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[28]->simple_payback_sorec); ?></td>
-					<td><php echo round($analysis->annual_data[29]->simple_payback_sorec); ?></td>
+					<th>Cumulative Cashflow (post-payback)</th>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
 				</tr>
 			</tbody>
-		</table> -->
+		</table>
 	</div>
 	<br />
 	<table>

@@ -30,7 +30,7 @@ caption, .caption { padding:5px 8px 3px; text-align:left; text-transform:upperca
 .prop-header-txt { color:#666; text-transform:uppercase; font-size:6pt; line-height:9pt; }
 .prepared { font-size:11pt; color:#333; line-height:14pt; text-transform:none; }
 
-.pie-back { border-radius:0 0 5px 5px; -moz-border-radius:0 0 5px 5px; -khtml-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; width:650px; }
+.pie-back { border-radius:0 0 5px 5px; -moz-border-radius:0 0 5px 5px; -khtml-border-radius:0 0 5px 5px; -webkit-border-radius:0 0 5px 5px; width:650px; background:#fcfcfc; }
 
 tbody.tabled { border-top:1px solid #ccc; }
 
