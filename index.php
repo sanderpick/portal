@@ -157,16 +157,16 @@ if($pro_key) {
 				$(".vis table").each(function(i) {
 					var type, colors, key, post, pre;
 					switch(i) { // ["#9faed3","#5880c0","#c9d1e6"]
-						case 0 : type = "pie"; colors = ["#333333","#808080","#b1cd49"]; key = true;
-							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"200px",height:"200px" });
+						case 0 : type = "pie"; colors = ["#5880C0","#C9D2E7","#b1cd49"]; key = true;
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"160px",height:"160px" });
 							break;
-						case 1 : type = "pie"; colors = ["#333333","#ccde89","#b1cd49"]; key = true;
-							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"200px",height:"200px" });
+						case 1 : type = "pie"; colors = ["#5880C0","#ccde89","#b1cd49"]; key = true;
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"160px",height:"160px" });
 							break;
-						case 2 : type = "pie"; colors = ["#333333","#b1cd49"]; key = true;
+						case 2 : type = "pie"; colors = ["#5880C0","#b1cd49"]; key = true;
 							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"130px",height:"130px" });
 							break;
-						case 3 : type = "area"; colors = ["#333333","#b1cd49"]; key = true; pre = ""; post = " kWh";
+						case 3 : type = "area"; colors = ["#5880C0","#b1cd49"]; key = true; pre = ""; post = " kWh";
 							if(draw_bill) $(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– First Year –" });
 							break;
 						case 4 : type = "bar"; colors = ["#b1cd49"]; key = false; pre = "$"; post = "";
@@ -175,12 +175,12 @@ if($pro_key) {
 						case 5 : type = "bar"; colors = ["#eae854"]; key = false; pre = ""; post = "";
 							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",yLabelPre:pre,yLabelPost:post,xTitle:"– kWh/m<span class='super'>2</span>/day over First Year –" });
 							break;
-						case 6 : type = "bar"; colors = ["#333333","#b1cd49"]; key = true; pre = "$"; post = "";
+						case 6 : type = "bar"; colors = ["#5880C0","#b1cd49"]; key = true; pre = "$"; post = "";
 							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
 							break;
-						// case 7 : type = "bar"; colors = ["#b1cd49"]; key = true; pre = "$"; post = "";
-						// 	$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –" });
-						// 	break;
+						case 7 : type = "bar"; colors = ["#5880C0","#b1cd49"]; key = true; pre = "$"; post = "";
+							$(this).visualize({ type:type,colors:colors,appendKey:key,width:"548px",height:"200px",yLabelPre:pre,yLabelPost:post,xTitle:"– Year –",altColor:true });
+							break;
 					}
 				});
 				// hide all sections
