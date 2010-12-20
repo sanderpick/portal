@@ -95,6 +95,7 @@ $rebate_prices_bbl = array();
 $rebate_types_abl = array();
 $rebate_descs_abl = array();
 $rebate_prices_abl = array();
+$rebate_prices_abl_total = 0;
 // layout images on names
 $layout_html = "";
 $print_layout_html = "";
@@ -422,8 +423,30 @@ for($i=0;$i<count($add_rebate_types);$i++) {
 		} else {
 			$rebate_types_abl[] = $rt;
 			$rebate_prices_abl[] = $rp;
+			$rebate_prices_abl_total += $rp;
 			$rebate_descs_abl[] = $add_rebate_descs[$i];
 		}
+	}
+}
+// parse additional credits
+$add_credit_types = explode(",",substr($pro->pro_credit_type,0,-1));
+$add_credit_descs = explode(",",substr($pro->pro_credit_desc,0,-1));
+$add_credit_amnts = explode(",",substr($pro->pro_credit_amnt,0,-1));
+for($i=0;$i<count($add_credit_types);$i++) {
+	if($add_credit_amnts[$i]!="") {
+		switch($add_credit_types[$i]) {
+			case 1 :
+				$ct = "@ ".$add_credit_amnts[$i]."% System Price";
+				$cp = $add_credit_amnts[$i]*($f->cus_price - $rebate_prices_abl_total)*0.01;
+				break;
+			case 2 :
+				$ct = "@ Fixed Amount";
+				$cp = $add_credit_amnts[$i];
+				break;
+		}
+		$rebate_types_abl[] = $ct;
+		$rebate_prices_abl[] = $cp;
+		$rebate_descs_abl[] = $add_credit_descs[$i];
 	}
 }
 // show tax credit info?
