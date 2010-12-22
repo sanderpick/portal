@@ -590,7 +590,7 @@ foreach($module_descs as $module_desc) {
 											</table>
 										</div>
 										<div class='page proposal-page'>
-											<img src='".$uri."' alt='".$module_desc."' />
+											<img src='".$uri."' alt='".$module_desc."' width='612' />
 										</div>";
 			}
 		}
@@ -632,10 +632,45 @@ foreach($inverter_descs as $inverter_desc) {
 											</table>
 										</div>
 										<div class='page proposal-page'>
-											<img src='".$uri."' alt='".$inverter_desc."' />
+											<img src='".$uri."' alt='".$inverter_desc."' width='612' />
 										</div>";
 			}
 		}
+	}
+}
+// reference sheets
+$ref_sheets_html = "";
+$print_ref_sheets_html = "";
+// get the sheets
+$refIDs = explode(",",substr($pro->pro_ref_sheets,0,-1));
+foreach($refIDs as $refID) {
+	$m->getRow("es_reference_sheets",$refID);
+	$ref_sheet = $m->lastData();
+	if($ref_sheet->ref_value!="") {
+		$ref_sheets_html .= "<tr><td colspan='1'>&nbsp;</td></tr>
+							<tr>
+								<td style='padding:0;'>
+									<a href='".$ref_sheet->ref_value."' target='_blank'>".$ref_sheet->ref_name."</a>
+								</td>
+						  </tr>";
+		$print_ref_sheets_html .= "<div style='page-break-before:always;' class='fake-break'></div>
+							<div class='proposal-head'>
+								<table style='width:664px;'>
+									<tr>
+										<td style='padding:0 0 6px 0; vertical-align:bottom;'>
+											<h1 class='page-head'>
+												<span style='font-weight:bold;'>Reference Sheets</span> ".$job->job_name." &ndash; ".$f->size."kW
+											</h1>
+										</td>
+										<td style='padding:0 0 4px 0;' align='right'>
+											<img src='gfx/logo-black.png' alt='small logo' />
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class='page proposal-page'>
+								<img src='".$ref_sheet->ref_value."' alt='".$ref_sheet->ref_name."' width='612' />
+							</div>";
 	}
 }
 // check sum for performance area graph

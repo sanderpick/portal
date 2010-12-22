@@ -147,7 +147,7 @@ td div.cell-round p {
 #binder-menu-over { position:absolute; z-index:99; }
 
 #choose-proposal { width:225px; white-space:nowrap; overflow:hidden; }
-#check-out { font-size:1.0em; padding:0.4em 1.1em 0.4em 21px; color:white; text-decoration:none; position:relative; font-weight:bold; top:126px; white-space:normal; }
+#check-out { font-size:1.0em; padding:0.4em 1.1em 0.4em 21px; color:white; text-decoration:none; position:relative; font-weight:bold; top:110px; white-space:normal; }
 #check-out span.ui-icon { margin:0 5px 0 0; position:absolute; left:0.2em; top:50%; margin-top:-8px; zoom:1; }
 #choose-contract { position:absolute; bottom:12px; left:16px; }
 #proposal-pending { display:none; margin:20px 0 0 0; width:200px; color:red; font-weight:bold; font-size:18px; }
