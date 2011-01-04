@@ -550,16 +550,6 @@ for($i=0;$i<count($inverter_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
 	$c++;
 }
-if($f->misc_materials!=0) {
-	$misc_desc = "";
-	//if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, Wire, Misc. Electrical Supplies, ";
-	if($pro->pro_misc_materials!=0 && $pro->pro_misc_materials_desc!="") $misc_desc .= $pro->pro_misc_materials_desc.", ";
-	else if($pro->pro_misc_materials!=0) $misc_desc .= "Misc. Materials, ";
-	$misc_desc = substr($misc_desc,0,-2);
-	if($misc_desc=="") $misc_desc = "Misc. Materials";
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($f->misc_materials)."</td></tr>";
-	$c++;
-}
 for($i=0;$i<count($add_mounting_mat_prices);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$add_mounting_mat_qntys[$i]."</td><td class='ex'></td><td>".$add_mounting_mat_descs[$i]."</td><td align='right'>".$add_mounting_mat_prices[$i]."</td></tr>";
 	$c++;
@@ -574,6 +564,16 @@ for($i=0;$i<count($miscellaneous_material_prices);$i++) {
 }
 for($i=0;$i<count($monitor_prices);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$monitor_qntys[$i]."</td><td class='ex'></td><td>".$monitor_descs[$i]."</td><td align='right'>".$monitor_prices[$i]."</td></tr>";
+	$c++;
+}
+if($f->misc_materials!=0) {
+	$misc_desc = "";
+	//if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, Wire, Misc. Electrical Supplies, ";
+	if($pro->pro_misc_materials!=0 && $pro->pro_misc_materials_desc!="") $misc_desc .= $pro->pro_misc_materials_desc.", ";
+	else if($pro->pro_misc_materials!=0) $misc_desc .= "Misc. Materials, ";
+	$misc_desc = substr($misc_desc,0,-2);
+	if($misc_desc=="") $misc_desc = "Misc. Materials";
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($f->misc_materials)."</td></tr>";
 	$c++;
 }
 $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
