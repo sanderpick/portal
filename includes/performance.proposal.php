@@ -17,7 +17,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<div style="margin:0 0 0 60%; position:relative;">
+	<div style="margin:0 0 0 60%; position:relative; <?php echo $job->job_kwh_load>0 ? "" : "display:none;"; ?>">
 		<div class="vis vis-pie" style="position:absolute; left:70px; top:-108px;">
 			<table>
 				<caption>Energy Distribution</caption>

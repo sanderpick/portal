@@ -431,11 +431,11 @@ if($pro_key) {
 	<div id="wrap">
 		<div id="menu">
 			<ul>
-				<li><a href="#tabs-1">The <strong>Lighthouse</strong>solar Way</a></li>
+				<li style="float:right;"><a href="#tabs-1">The <strong>Lighthouse</strong>solar Way</a></li>
 				<!--<li style="float:right;"><a href="#tabs-2">My Rep</a></li>
 				<li style="float:right; opacity:.5;"><a href="#tabs-3">My <strong>Light</strong>gauge</a></li>
 				<li style="float:right; opacity:.5;"><a href="#tabs-4">My Gallery</a></li>-->
-				<li style="float:right;"><a href="#tabs-2">My Proposal</a></li>
+				<li><a href="#tabs-2">My Proposal</a></li>
 			</ul>
 			<div id="tabs-1">
 				<div id="binder-menu-over"><img src="gfx/glass.png" width="225" height="30" alt="glass over"></div>

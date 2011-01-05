@@ -59,10 +59,14 @@
 								<th>Your Cost</th>
 								<td><?php echo $f->cus_price; ?></td>
 							</tr>
+							<?php
+								if($f->credits_total > 0) {
+							?>
 							<tr>
 								<th>Rebates &amp; Discounts</th>
 								<td><?php echo $f->credits_total; ?></td>
 							</tr>
+							<?php } ?>
 							<?php } ?>
 							<?php
 								for($i=0;$i<count($add_credits);$i++) {
