@@ -47,6 +47,10 @@
 								<td><?php echo $f->cus_after_credit; ?></td>
 							</tr>
 							<tr>
+								<th>Rebates &amp; Discounts</th>
+								<td><?php echo $f->credits_total; ?></td>
+							</tr>
+							<tr>
 								<th>30% Federal Tax Credit</th>
 								<td><?php echo $f->credit; ?></td>
 							</tr>
@@ -55,11 +59,21 @@
 								<th>Your Cost</th>
 								<td><?php echo $f->cus_price; ?></td>
 							</tr>
-							<?php } ?>
+							<?php
+								if($f->credits_total > 0) {
+							?>
 							<tr>
 								<th>Rebates &amp; Discounts</th>
 								<td><?php echo $f->credits_total; ?></td>
 							</tr>
+							<?php } ?>
+							<?php } ?>
+							<?php
+								for($i=0;$i<count($add_credits);$i++) {
+									echo "<th>".$add_credits[$i]."</th>";
+									echo "<td>".$add_credit_totals[$i]."</td>";
+								}
+							?>
 						</tbody>
 					</table>
 				</div>

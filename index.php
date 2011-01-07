@@ -30,6 +30,8 @@ if($pro_key) {
 		require("includes/portal.php");
 	} else exit("Sorry, your proposal key is invalid or expired.");
 }
+// have reference sheets
+$have_refs = (isset($refIDs) && $refIDs[0] != "") ? 1 : 0;
 #——————————————————————————————–—————————————————————–––––––––– HTML
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -50,7 +52,7 @@ if($pro_key) {
 	<!--[if lt IE 9]>
 		<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js">IE7_PNG_SUFFIX=".png";</script>
 	<![endif]-->
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
 	<script type="text/javascript" src="js/EnhanceJS/enhance.js"></script>
 	<script type="text/javascript" src="js/excanvas.js"></script>
@@ -431,11 +433,11 @@ if($pro_key) {
 	<div id="wrap">
 		<div id="menu">
 			<ul>
-				<li><a href="#tabs-1">The <strong>Lighthouse</strong>solar Way</a></li>
+				<li style="float:right;"><a href="#tabs-1">The <strong>Lighthouse</strong>solar Way</a></li>
 				<!--<li style="float:right;"><a href="#tabs-2">My Rep</a></li>
 				<li style="float:right; opacity:.5;"><a href="#tabs-3">My <strong>Light</strong>gauge</a></li>
 				<li style="float:right; opacity:.5;"><a href="#tabs-4">My Gallery</a></li>-->
-				<li style="float:right;"><a href="#tabs-2">My Proposal</a></li>
+				<li><a href="#tabs-2">My Proposal</a></li>
 			</ul>
 			<div id="tabs-1">
 				<div id="binder-menu-over"><img src="gfx/glass.png" width="225" height="30" alt="glass over"></div>
@@ -502,6 +504,9 @@ if($pro_key) {
 							<li id="i4" title="prop-financials" class="list-item">Financial Details</li>
 							<li id="i5" title="prop-environmental" class="list-item">Environmental Details</li>
 							<li id="i6" title="prop-materials" class="list-item">Materials</li>
+							<?php if($have_refs) { ?>
+								<li id="i7" title="prop-references" class="list-item">References</li>
+							<?php } ?>
 						</ul>
 						<div id="proposal-pending"><p>Your Sales Rep will contact you within 24 hours.</p></div>
 						<div id="approved"></div>
@@ -530,6 +535,8 @@ if($pro_key) {
 										require("includes/financials.proposal.php");
 										require("includes/environmental.proposal.php");
 										require("includes/materials.proposal.php");
+										if($have_refs)
+											require("includes/references.proposal.php");
 									}
 								?>
 								<br /><br />

@@ -33,8 +33,14 @@ $customer_phone = $cus->cus_phone1!="" ? $cus->cus_phone1 : $cus->cus_phone2;
 $customer_phone = $customer_phone!="" ? $customer_phone : $cus->cus_phone_mobile;
 $customer_email = $cus->cus_email1!="" ? $cus->cus_email1 : $cus->cus_email2;
 // overall contacts
-$customer_title = $cus->cus_company!="" ? $cus->cus_company : $cus->cus_name_first." ".$cus->cus_name_last;
-$job_title = $job->job_company!="" ? $job->job_company : ($job->job_contact!="" ? $job->job_contact : $customer_title);
+$customer_title = $cus->cus_name_first." ".$cus->cus_name_last;
+$job_title = $job->job_contact!="" ? 
+				$job->job_contact : 
+				($customer_title!="" ?
+					$customer_title :
+					($job->job_company!="" ? 
+						$job->job_company :
+						$cus->cus_company));
 // job
 $job_html = $job_title."<br />";
 $job_html .= $job->job_phone!="" ? $job->job_phone."<br />" : $customer_phone."<br />"; 		
@@ -95,6 +101,7 @@ $rebate_prices_bbl = array();
 $rebate_types_abl = array();
 $rebate_descs_abl = array();
 $rebate_prices_abl = array();
+$rebate_prices_abl_total = 0;
 // layout images on names
 $layout_html = "";
 $print_layout_html = "";
@@ -298,27 +305,6 @@ foreach($inverters as $in) {
 	$inverter_prices[] = $inverter_price;
 	$total_inverter_price += $inverter_price;
 }
-// monitors
-$monitors = explode(",",substr($pro->pro_data_monitors,0,-1));
-$monitor_types = explode(",",substr($pro->pro_data_monitor_types,0,-1));
-$monitor_qntys = array();
-$monitor_descs = array();
-$monitor_prices = array();
-for($i=0;$i<count($monitors);$i++) {
-	if($m->getRow("es_data_monitoring",$monitors[$i],"dat_model_num")) {
-		$monitor_qntys[] = 1;
-		switch($monitor_types[$i]) {
-			case 1 :
-				$monitor_descs[] = "FREE ".$m->lastData()->dat_desc;
-				$monitor_prices[] = 0;
-				break;
-			case 0 :
-				$monitor_descs[] = $m->lastData()->dat_desc;
-				$monitor_prices[] = $m->lastData()->dat_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
-				break;
-		}
-	}
-}
 // add modules if duplicate
 for($i=0;$i<count($module_descs);$i++) {
 	for($j=0;$j<count($module_descs);$j++) {
@@ -380,20 +366,106 @@ $inverter_descs = array_values(array_filter($inverter_descs,"strlen"));
 $inverter_qntys = array_values(array_filter($inverter_qntys,"strlen"));
 $inverter_prices = array_values(array_filter($inverter_prices,"strlen"));
 // add monitor if duplicate
-for($i=0;$i<count($monitor_descs);$i++) {
-	for($j=0;$j<count($monitor_descs);$j++) {
-		if($monitor_descs[$j]==$monitor_descs[$i] && $i!=$j && $monitor_descs[$i]!=NULL && $monitor_descs[$j]!=NULL) {
-			$monitor_qntys[$i] += $monitor_qntys[$j];
-			$monitor_prices[$i] += $monitor_prices[$j];
-			$monitor_descs[$j] = NULL;
-			$monitor_qntys[$j] = NULL;
-			$monitor_prices[$j] = NULL;
+// for($i=0;$i<count($monitor_descs);$i++) {
+// 	for($j=0;$j<count($monitor_descs);$j++) {
+// 		if($monitor_descs[$j]==$monitor_descs[$i] && $i!=$j && $monitor_descs[$i]!=NULL && $monitor_descs[$j]!=NULL) {
+// 			$monitor_qntys[$i] += $monitor_qntys[$j];
+// 			$monitor_prices[$i] += $monitor_prices[$j];
+// 			$monitor_descs[$j] = NULL;
+// 			$monitor_qntys[$j] = NULL;
+// 			$monitor_prices[$j] = NULL;
+// 		}
+// 	}
+// }
+// $monitor_descs = array_values(array_filter($monitor_descs,"strlen"));
+// $monitor_qntys = array_values(array_filter($monitor_qntys,"strlen"));
+// $monitor_prices = array_values(array_filter($monitor_prices,"strlen"));
+
+
+// data monitors
+$monitors = explode(",",substr($pro->pro_data_monitors,0,-1));
+$monitor_types = explode(",",substr($pro->pro_data_monitor_types,0,-1));
+$monitor_qntys = explode(",",substr($pro->pro_data_monitor_qntys,0,-1));
+$monitor_descs = array();
+$monitor_prices = array();
+for($i=0;$i<count($monitors);$i++) {
+	if($m->getRow("es_data_monitoring",$monitors[$i],"dat_model_num")) {
+		switch($monitor_types[$i]) {
+			case 1 :
+				$monitor_descs[] = $m->lastData()->dat_desc;
+				$monitor_prices[] = "FREE";
+				break;
+			case 0 :
+				$monitor_descs[] = $m->lastData()->dat_desc;
+				$monitor_prices[] = "$".number_format($monitor_qntys[$i]*$m->lastData()->dat_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01));
+				break;
 		}
 	}
 }
-$monitor_descs = array_values(array_filter($monitor_descs,"strlen"));
-$monitor_qntys = array_values(array_filter($monitor_qntys,"strlen"));
-$monitor_prices = array_values(array_filter($monitor_prices,"strlen"));
+
+// additional mounting materials
+$add_mounting_mats = explode(",",substr($pro->pro_add_mounting_mats,0,-1));
+$add_mounting_mat_types = explode(",",substr($pro->pro_add_mounting_mat_types,0,-1));
+$add_mounting_mat_qntys = explode(",",substr($pro->pro_add_mounting_mat_qntys,0,-1));
+$add_mounting_mat_descs = array();
+$add_mounting_mat_prices = array();
+for($i=0;$i<count($add_mounting_mats);$i++) {
+	if($m->getRow("es_mounting_materials",$add_mounting_mats[$i],"mat_model_num")) {
+		switch($add_mounting_mat_types[$i]) {
+			case 1 :
+				// ignore ?
+				break;
+			case 0 :
+				$add_mounting_mat_descs[] = $m->lastData()->mat_desc;
+				$add_mounting_mat_prices[] = "$".number_format($add_mounting_mat_qntys[$i]*$m->lastData()->mat_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01));
+				break;
+		}
+	}
+}
+
+// conduit and wire runs
+$conn_comps = explode(",",substr($pro->pro_conn_comps,0,-1));
+$conn_comp_types = explode(",",substr($pro->pro_conn_comp_types,0,-1));
+$conn_comp_qntys = explode(",",substr($pro->pro_conn_comp_qntys,0,-1));
+$conn_comp_descs = array();
+$conn_comp_prices = array();
+for($i=0;$i<count($conn_comps);$i++) {
+	if($m->getRow("es_conn_comps",$conn_comps[$i],"con_model_num")) {
+		switch($conn_comp_types[$i]) {
+			case 1 :
+				// ignore ?
+				break;
+			case 0 :
+				$conn_comp_descs[] = $m->lastData()->con_desc;
+				$conn_comp_prices[] = "$".number_format($conn_comp_qntys[$i]*$m->lastData()->con_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01));
+				break;
+		}
+	}
+}
+
+// miscellaneous materials
+$miscellaneous_materials = explode(",",substr($pro->pro_miscellaneous_materials,0,-1));
+$miscellaneous_material_types = explode(",",substr($pro->pro_miscellaneous_material_types,0,-1));
+$miscellaneous_material_qntys = explode(",",substr($pro->pro_miscellaneous_material_qntys,0,-1));
+$miscellaneous_material_descs = array();
+$miscellaneous_material_prices = array();
+for($i=0;$i<count($miscellaneous_materials);$i++) {
+	if($m->getRow("es_miscellaneous_materials",$miscellaneous_materials[$i],"mis_model_num")) {
+		switch($miscellaneous_material_types[$i]) {
+			case 1 :
+				// ignore ?
+				break;
+			case 0 :
+				$miscellaneous_material_descs[] = $m->lastData()->mis_desc;
+				$miscellaneous_material_prices[] = "$".number_format($miscellaneous_material_qntys[$i]*$m->lastData()->mis_price*(1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01));
+				break;
+		}
+	}
+}
+
+
+
+
 // parse additional rebates
 $add_rebate_types = explode(",",substr($pro->pro_rebate_type,0,-1));
 $add_rebate_descs = explode(",",substr($pro->pro_rebate_desc,0,-1));
@@ -422,8 +494,34 @@ for($i=0;$i<count($add_rebate_types);$i++) {
 		} else {
 			$rebate_types_abl[] = $rt;
 			$rebate_prices_abl[] = $rp;
+			$rebate_prices_abl_total += $rp;
 			$rebate_descs_abl[] = $add_rebate_descs[$i];
 		}
+	}
+}
+// parse additional credits
+$add_credit_types = explode(",",substr($pro->pro_credit_type,0,-1));
+$add_credit_descs = explode(",",substr($pro->pro_credit_desc,0,-1));
+$add_credit_amnts = explode(",",substr($pro->pro_credit_amnt,0,-1));
+$add_credits = array();
+$add_credit_totals = array();
+for($i=0;$i<count($add_credit_types);$i++) {
+	if($add_credit_amnts[$i]!="") {
+		switch($add_credit_types[$i]) {
+			case 1 :
+				$ct = "@ ".$add_credit_amnts[$i]."% System Price";
+				$cp = $add_credit_amnts[$i]*($f->cus_price - $rebate_prices_abl_total)*0.01;
+				break;
+			case 2 :
+				$ct = "@ Fixed Amount";
+				$cp = $add_credit_amnts[$i];
+				break;
+		}
+		$add_credits[] = $add_credit_descs[$i];
+		$add_credit_totals[] = $cp;
+		$rebate_types_abl[] = $ct;
+		$rebate_prices_abl[] = $cp;
+		$rebate_descs_abl[] = $add_credit_descs[$i];
 	}
 }
 // show tax credit info?
@@ -452,18 +550,30 @@ for($i=0;$i<count($inverter_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
 	$c++;
 }
+for($i=0;$i<count($add_mounting_mat_prices);$i++) {
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$add_mounting_mat_qntys[$i]."</td><td class='ex'></td><td>".$add_mounting_mat_descs[$i]."</td><td align='right'>".$add_mounting_mat_prices[$i]."</td></tr>";
+	$c++;
+}
+for($i=0;$i<count($conn_comp_prices);$i++) {
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$conn_comp_qntys[$i]."</td><td class='ex'></td><td>".$conn_comp_descs[$i]."</td><td align='right'>".$conn_comp_prices[$i]."</td></tr>";
+	$c++;
+}
+for($i=0;$i<count($miscellaneous_material_prices);$i++) {
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$miscellaneous_material_qntys[$i]."</td><td class='ex'></td><td>".$miscellaneous_material_descs[$i]."</td><td align='right'>".$miscellaneous_material_prices[$i]."</td></tr>";
+	$c++;
+}
+for($i=0;$i<count($monitor_prices);$i++) {
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$monitor_qntys[$i]."</td><td class='ex'></td><td>".$monitor_descs[$i]."</td><td align='right'>".$monitor_prices[$i]."</td></tr>";
+	$c++;
+}
 if($f->misc_materials!=0) {
 	$misc_desc = "";
-	if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, Wire, Misc. Electrical Supplies, ";
+	//if($pro->pro_conduit_out!=0 || $pro->pro_conduit_in!=0 || $pro->pro_conduit_under!=0) $misc_desc .= "Conduit, Wire, Misc. Electrical Supplies, ";
 	if($pro->pro_misc_materials!=0 && $pro->pro_misc_materials_desc!="") $misc_desc .= $pro->pro_misc_materials_desc.", ";
 	else if($pro->pro_misc_materials!=0) $misc_desc .= "Misc. Materials, ";
 	$misc_desc = substr($misc_desc,0,-2);
 	if($misc_desc=="") $misc_desc = "Misc. Materials";
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($f->misc_materials)."</td></tr>";
-	$c++;
-}
-for($i=0;$i<count($monitor_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$monitor_qntys[$i]."</td><td class='ex'></td><td>".$monitor_descs[$i]."</td><td align='right'>$".number_format($monitor_prices[$i])."</td></tr>";
 	$c++;
 }
 $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
@@ -567,7 +677,7 @@ foreach($module_descs as $module_desc) {
 											</table>
 										</div>
 										<div class='page proposal-page'>
-											<img src='".$uri."' alt='".$module_desc."' />
+											<img src='".$uri."' alt='".$module_desc."' width='612' />
 										</div>";
 			}
 		}
@@ -609,9 +719,45 @@ foreach($inverter_descs as $inverter_desc) {
 											</table>
 										</div>
 										<div class='page proposal-page'>
-											<img src='".$uri."' alt='".$inverter_desc."' />
+											<img src='".$uri."' alt='".$inverter_desc."' width='612' />
 										</div>";
 			}
+		}
+	}
+}
+// reference sheets
+$ref_sheets_html = "";
+$print_ref_sheets_html = "";
+// get the sheets
+$refIDs = explode(",",substr($pro->pro_ref_sheets,0,-1));
+foreach($refIDs as $refID) {
+	if($m->getRow("es_reference_sheets",$refID)) {
+		$ref_sheet = $m->lastData();
+		if($ref_sheet->ref_value!="") {
+			$ref_sheets_html .= "<tr><td colspan='1'>&nbsp;</td></tr>
+								<tr>
+									<td style='padding:0;'>
+										<a href='".$ref_sheet->ref_value."' target='_blank'>".$ref_sheet->ref_name."</a>
+									</td>
+							  </tr>";
+			$print_ref_sheets_html .= "<div style='page-break-before:always;' class='fake-break'></div>
+								<div class='proposal-head'>
+									<table style='width:664px;'>
+										<tr>
+											<td style='padding:0 0 6px 0; vertical-align:bottom;'>
+												<h1 class='page-head'>
+													<span style='font-weight:bold;'>Reference Sheets</span> ".$job->job_name." &ndash; ".$f->size."kW
+												</h1>
+											</td>
+											<td style='padding:0 0 4px 0;' align='right'>
+												<img src='gfx/logo-black.png' alt='small logo' />
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class='page proposal-page'>
+									<img src='".$ref_sheet->ref_value."' alt='".$ref_sheet->ref_name."' width='612' />
+								</div>";
 		}
 	}
 }

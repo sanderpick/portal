@@ -46,7 +46,7 @@ else {
 	<!--[if lt IE 9]>
 		<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js">IE7_PNG_SUFFIX=".png";</script>
 	<![endif]-->
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="js/EnhanceJS/enhance.js"></script>
 	<script type="text/javascript" src="js/excanvas.js"></script>
 	<script type="text/javascript" src="js/visualize.jQuery.js"></script>
@@ -145,6 +145,7 @@ else {
 				<?php require("includes/environmental.proposal.php"); ?>
 			</div>
 			<?php echo $print_materials_html; ?>
+			<?php echo $print_ref_sheets_html; ?>
 		</div>
 	</div>
 </body>

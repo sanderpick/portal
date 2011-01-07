@@ -198,7 +198,7 @@ $.fn.visualize = function(options, container){
 						
 				var centerx = Math.round(canvas.width()/2);
 				var centery = Math.round(canvas.height()/2);
-				var radius = centery - o.pieMargin;				
+				var radius = Math.abs(centery - o.pieMargin);				
 				var counter = 0.0;
 				var toRad = function(integer){ return (Math.PI/180)*integer; };
 				var labels = $('<ul class="visualize-labels"></ul>')
