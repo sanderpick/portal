@@ -188,7 +188,7 @@ $have_refs = (isset($refIDs) && $refIDs[0] != "") ? 1 : 0;
 				// hide all sections
 				$(".prop-section").hide();
 				// get the job summary
-				var job_name = <?php if($is_pro) echo "'".$job_summary."'"; else echo 0; ?>;
+				var job_name = <?php if($is_pro) echo "'".str_replace("'","&apos;",$job_summary)."'"; else echo 0; ?>;
 				// set the proposal
 				$("#menu").tabs({ selected:1 });
 				// setup proposal slider
