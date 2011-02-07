@@ -83,7 +83,7 @@ class SolarAnalysis {
 		$cfs = array();
 		$cfs[] = $startUp;
 		foreach($this->annual_data as $sy) $cfs[] = $postTax ? $sy->irr_post_tax : $sy->irr_pre_tax;
-	    $result;
+	    $result = 0;
 	    if($cfs && count($cfs)>0) { 
 	        if($cfs[0] != 0.0) {
 				// check
