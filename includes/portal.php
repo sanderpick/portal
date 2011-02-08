@@ -616,7 +616,7 @@ for($i=0;$i<count($rebate_descs_bbl);$i++) {
 		$c++;
 	}
 }
-if($pro->pro_discount!=0) {
+if($pro->pro_discount!=0 && $pro->pro_discount_hidden!=1) {
 	if($pro->pro_discount_desc!="") $pro->pro_discount_desc = "(".$pro->pro_discount_desc.")";
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Discount ".$pro->pro_discount_desc."</td><td class='red-txt' align='right'>-&nbsp&nbsp$".number_format($pro->pro_discount)."</td></tr>";
 	$c++;
