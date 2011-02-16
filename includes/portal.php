@@ -169,17 +169,17 @@ foreach($zones as $zone) {
 	$module_qntys[] = $zone->zon_num_modules;
 	$m->getRow("es_modules",$zone->zon_module,"mod_model_num");
 	$module_descs[] = $m->lastData()->mod_desc;
-	$module_prices[] = $zone->zon_module_price;
+	$module_prices[] = $zone->zon_module_price * (1 + $off->off_inventory_margin*0.01) * (1 + $off->off_inventory_up*0.01);
 	// racking
 	$racking_qntys[] = $zone->zon_racking_length;
 	$m->getRow("es_racking",$zone->zon_racking,"rac_model_num");
 	$racking_descs[] = $m->lastData()->rac_desc;
-	$racking_prices[] = $zone->zon_racking_price;
+	$racking_prices[] = $zone->zon_racking_price * (1 + $off->off_inventory_margin*0.01) * (1 + $off->off_inventory_up*0.01);
 	// mounting
 	$mounting_qntys[] = $zone->zon_num_connections;
 	$m->getRow("es_mounting_methods",$zone->zon_mounting_method,"met_value");
 	$mounting_descs[] = $m->lastData()->met_desc;
-	$mounting_prices[] = $zone->zon_connection_price;
+	$mounting_prices[] = $zone->zon_connection_price * (1 + $off->off_inventory_margin*0.01) * (1 + $off->off_inventory_up*0.01);
 	// rebate
 	$rebate_types_bbl[] = "@ $".(floor($zone->zon_rebate / $zone->zon_size / 10)/100)." / Watt";
 	$rebate_descs_bbl[] = $zone->zon_rebate_desc;
@@ -573,7 +573,8 @@ if($f->misc_materials!=0) {
 	else if($pro->pro_misc_materials!=0) $misc_desc .= "Misc. Materials, ";
 	$misc_desc = substr($misc_desc,0,-2);
 	if($misc_desc=="") $misc_desc = "Misc. Materials";
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($f->misc_materials)."</td></tr>";
+	$misc_materials_price = $f->misc_materials * (1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
+	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($misc_materials_price)."</td></tr>";
 	$c++;
 }
 $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
