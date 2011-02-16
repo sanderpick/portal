@@ -55,8 +55,8 @@ $have_refs = (isset($refIDs) && $refIDs[0] != "") ? 1 : 0;
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
 	<script type="text/javascript" src="js/EnhanceJS/enhance.js"></script>
-	<script type="text/javascript" src="js/visualize.jQuery.js"></script>
 	<script type="text/javascript" src="js/excanvas.js"></script>
+	<script type="text/javascript" src="js/visualize.jQuery.js">
 	<script type="text/javascript" src="js/date.format.js"></script>
 	<script type="text/javascript">
 		$(function() {

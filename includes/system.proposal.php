@@ -60,18 +60,20 @@
 								<td><?php echo $f->cus_price; ?></td>
 							</tr>
 							<?php
-								if($f->credits_total > 0) {
+								      if($f->credits_total > 0) {
 							?>
 							<tr>
 								<th>Rebates &amp; Discounts</th>
 								<td><?php echo $f->credits_total; ?></td>
 							</tr>
-							<?php } ?>
+							<?php         } ?>
 							<?php } ?>
 							<?php
 								for($i=0;$i<count($add_credits);$i++) {
-									echo "<th>".$add_credits[$i]."</th>";
-									echo "<td>".$add_credit_totals[$i]."</td>";
+									echo "<tr>"."\n";
+									echo "<th>".$add_credits[$i]."</th>"."\n";
+									echo "<td>".$add_credit_totals[$i]."</td>"."\n";
+									echo "</tr>"."\n";
 								}
 							?>
 						</tbody>
