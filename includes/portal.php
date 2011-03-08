@@ -597,7 +597,7 @@ if($pro->pro_engin_fee!=0) {
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Engineering Fees</td><td align='right'>$".number_format($pro->pro_engin_fee+$engin_up)."</td></tr>";
 	$c++;
 }
-if($pro->pro_extra_fee!=0) {
+if($pro->pro_extra_fee!=0 && $pro->pro_extra_hidden!=1) {
 	$extra_up = $pro->pro_extra_fee*$off->off_sub_up*0.01;
 	if($pro->pro_extra_desc!="") $pro->pro_extra_desc = "(".$pro->pro_extra_desc.")";
 	$fees_html .= "<tr class='".$row_color[($c+1)%2]."'><td>Extra Fees ".$pro->pro_extra_desc."</td><td align='right'>$".number_format($pro->pro_extra_fee+$extra_up)."</td></tr>";
