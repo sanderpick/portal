@@ -581,9 +581,10 @@ $components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials To
 // labor lines
 $labor_html = "";
 $c = 0;
-$labor_html .= "<tr class='dark'><td>PV System – Installation Labor</td><td align='right'>$".number_format($f->install_labor)."</td></tr>";
+$labor_price = $f->install_labor;
+$labor_html .= "<tr class='dark'><td>PV System – Installation Labor</td><td align='right'>$".number_format($labor_price)."</td></tr>";
 $c++;
-$labor_html .= "<tr><td class='big darker round-l'>Labor Total</td><td align='right' class='big darker round-r'>$".number_format($f->install_labor)."</td></tr>";
+$labor_html .= "<tr><td class='big darker round-l'>Labor Total</td><td align='right' class='big darker round-r'>$".number_format($labor_price)."</td></tr>";
 // fees lines
 $fees_html = "";
 $c = 0;
