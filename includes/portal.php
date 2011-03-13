@@ -534,36 +534,45 @@ if($use_credit) {
 // components lines
 $components_html = "";
 $c = 0;
+$running_total = 0;
 for($i=0;$i<count($module_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$module_qntys[$i]."</td><td class='ex'></td><td>".$module_descs[$i]."</td><td align='right'>$".number_format($module_prices[$i])."</td></tr>";
+	$running_total += round($module_prices[$i]);
 	$c++;
 }
 for($i=0;$i<count($racking_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($racking_qntys[$i])." (ft.)</td><td class='ex'></td><td>".$racking_descs[$i]."</td><td align='right'>$".number_format($racking_prices[$i])."</td></tr>";
+	$running_total += round($racking_prices[$i]);
 	$c++;
 }
 for($i=0;$i<count($mounting_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])."</td><td class='ex'></td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
+	$running_total += round($mounting_prices[$i]);
 	$c++;
 }
 for($i=0;$i<count($inverter_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
+	$running_total += round($inverter_prices[$i]);
 	$c++;
 }
 for($i=0;$i<count($add_mounting_mat_prices);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$add_mounting_mat_qntys[$i]."</td><td class='ex'></td><td>".$add_mounting_mat_descs[$i]."</td><td align='right'>".$add_mounting_mat_prices[$i]."</td></tr>";
+	$running_total += (float)substr($add_mounting_mat_prices[$i],1);
 	$c++;
 }
 for($i=0;$i<count($conn_comp_prices);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$conn_comp_qntys[$i]."</td><td class='ex'></td><td>".$conn_comp_descs[$i]."</td><td align='right'>".$conn_comp_prices[$i]."</td></tr>";
+	$running_total += (float)substr($conn_comp_prices[$i],1);
 	$c++;
 }
 for($i=0;$i<count($miscellaneous_material_prices);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$miscellaneous_material_qntys[$i]."</td><td class='ex'></td><td>".$miscellaneous_material_descs[$i]."</td><td align='right'>".$miscellaneous_material_prices[$i]."</td></tr>";
+	$running_total += (float)substr($miscellaneous_material_prices[$i],1);
 	$c++;
 }
 for($i=0;$i<count($monitor_prices);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$monitor_qntys[$i]."</td><td class='ex'></td><td>".$monitor_descs[$i]."</td><td align='right'>".$monitor_prices[$i]."</td></tr>";
+	$running_total += (float)substr($monitor_prices[$i],1);
 	$c++;
 }
 if($f->misc_materials!=0) {
@@ -575,9 +584,11 @@ if($f->misc_materials!=0) {
 	if($misc_desc=="") $misc_desc = "Misc. Materials";
 	$misc_materials_price = $f->misc_materials * (1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($misc_materials_price)."</td></tr>";
+	$running_total += round($misc_materials_price);
 	$c++;
 }
-$components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
+//$components_html .= "<tr><td colspan='3' class='big darker round-l'>Materials Total</td><td align='right' class='big darker round-r'>$".number_format($f->comp_total)."</td></tr>";
+$components_html .= "<tr><td colspan='3' class='big darker round-l'>Running Total</td><td align='right' class='big darker round-r'>$".number_format($running_total)."</td></tr>";
 // labor lines
 $labor_html = "";
 $c = 0;
