@@ -546,9 +546,11 @@ for($i=0;$i<count($racking_qntys);$i++) {
 	$c++;
 }
 for($i=0;$i<count($mounting_qntys);$i++) {
-	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])."</td><td class='ex'></td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
-	$running_total += round($mounting_prices[$i]);
-	$c++;
+	if ( $mounting_prices[$i] != 0 ) {
+		$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".number_format($mounting_qntys[$i])."</td><td class='ex'></td><td>".$mounting_descs[$i]."</td><td align='right'>$".number_format($mounting_prices[$i])."</td></tr>";
+		$running_total += round($mounting_prices[$i]);
+		$c++;
+	}
 }
 for($i=0;$i<count($inverter_qntys);$i++) {
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>".$inverter_qntys[$i]."</td><td class='ex'></td><td>".$inverter_descs[$i]."</td><td align='right'>$".number_format($inverter_prices[$i])."</td></tr>";
@@ -582,7 +584,8 @@ if($f->misc_materials!=0) {
 	else if($pro->pro_misc_materials!=0) $misc_desc .= "Misc. Materials, ";
 	$misc_desc = substr($misc_desc,0,-2);
 	if($misc_desc=="") $misc_desc = "Misc. Materials";
-	$misc_materials_price = $f->misc_materials * (1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
+	//$misc_materials_price = $f->misc_materials * (1 + $off->off_inventory_up*0.01)*(1 + $off->off_inventory_margin*0.01);
+	$misc_materials_price = $f->misc_materials;
 	$components_html .= "<tr class='".$row_color[($c+1)%2]."'><td>&nbsp;</td><td>&nbsp;</td><td>".$misc_desc."</td><td align='right'>$".number_format($misc_materials_price)."</td></tr>";
 	$running_total += round($misc_materials_price);
 	$c++;

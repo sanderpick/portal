@@ -16,7 +16,7 @@
 						<a href="mailto:<?php echo $rep->rep_email; ?>"><?php echo $rep->rep_email; ?></a> (e)<br />
 						<?php echo $rep->rep_phone!="" ? $rep->rep_phone : $off->off_phone; ?> (p)<br />
 						<?php echo "L.H.S. ".$off->off_franchise_name; ?><br />
-						<?php echo "Contractor License: ".$off->off_license_num; ?>
+						<?php if ( $off->off_license_num != "" ) { echo "Contractor License: ".$off->off_license_num; } ?>
 					</p>
 				</td>
 			</tr>
