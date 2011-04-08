@@ -50,15 +50,32 @@ $job_html .= $job->job_city.", ";
 $job_html .= $job->job_state." ";
 $job_html .= $job->job_zip."<br />";
 $job_name = (strlen($job->job_name)>20) ? substr($job->job_name,0,17)."..." : $job->job_name;
-$job_summary_short =  "<strong>".$job_name." – ".$f->size."kW</strong>";
-$job_summary =  "<strong>".$job->job_name." – ".$f->size."kW</strong>";
+$job_summary_short =  "<strong>".$job_name." - ".$f->size."kW</strong>";
+$job_summary =  "<strong>".$job->job_name." - ".$f->size."kW</strong>";
 // incentive
 $incentive_revenue = number_format($pro->pro_incentive_rate*$f->production);
 // cover letter
-$cover_letter = str_replace("\n","<br />",$pro->pro_cover_letter);
+
+$cover_letter = $pro->pro_cover_letter;
+
+// remove the old signature if its present
+$signature_location = strpos( $cover_letter, "Yours truly");
+if ( $signature_location !== false ) {
+	$cover_letter = substr( $cover_letter, 0, $signature_location );
+}
+
+//$cover_letter = "Dear ".$job_title.",\n\n".$off->off_cover_letter;
+$cover_letter .= "\n\nYours truly,\n".$rep->rep_name_first." ".$rep->rep_name_last.", ".$rep->rep_title."\n\n";
+$cover_letter .= "Lighthousesolar\n";
+$cover_letter .= $off->off_city.", ".$off->off_state." ".$off->off_zip."\n";
+$cover_letter .= $rep->rep_email." (e)\n";
+$cover_letter .= $rep->rep_phone!="" ? $rep->rep_phone." (p)" : $off->off_phone." (p)";
+
+$cover_letter = str_replace("\n","<br />",$cover_letter);
 $cover_letter = str_replace('"','&quot;',$cover_letter);
 $cover_letter = str_replace("'","&#39;",$cover_letter);
 $cover_letter = str_replace("#amp;","&",$cover_letter);
+
 // $cover_letter = "Dear ".$job_title.",<br /><br />".$cover_letter;
 // $cover_letter .= ($pro->pro_incentive==1) ? "<br /><br />This system will generate a recurring revenue of approximately $".$incentive_revenue." annually for ".$pro->pro_incentive_yrs." years.": "";
 // $cover_letter .= "<br /><br />Yours truly,<br />".$rep->rep_name_first." ".$rep->rep_name_last.", <em>".$rep->rep_title."</em><br /><br />";
