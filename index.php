@@ -448,7 +448,7 @@ $have_refs = (isset($refIDs) && $refIDs[0] != "") ? 1 : 0;
 							<li id="i0" title="bind-whysolarnow" class="binder-list-item"><strong>Why Solar</strong> now?</li>
 							<li id="i1" title="bind-whylighthousesolar" class="binder-list-item"><strong>Why Lighthouse</strong>solar?</li>
 							<li id="i2" title="bind-electric" class="binder-list-item"><strong>Solar</strong> 101: Solar Electric</li>
-							<li id="i3" title="bind-thermal" class="binder-list-item"><strong>Solar</strong> 101: Solar Thermal</li>
+				<!-- 			<li id="i3" title="bind-thermal" class="binder-list-item"><strong>Solar</strong> 101: Solar Thermal</li>   -->
                             <li id="i4" title="bind-residential" class="binder-list-item"><strong>Residential</strong> Portfolio</li>
                             <li id="i5" title="bind-commercial" class="binder-list-item"><strong>Commercial</strong> Portfolio</li>
                             <li id="i6" title="bind-installation" class="binder-list-item"><strong>The Installation</strong> Process</li>
@@ -468,7 +468,7 @@ $have_refs = (isset($refIDs) && $refIDs[0] != "") ? 1 : 0;
 								require("includes/whysolarnow.binder.php");
 								require("includes/whylighthousesolar.binder.php");
 								require("includes/electric.binder.php");
-								require("includes/thermal.binder.php");
+							/*	require("includes/thermal.binder.php");  */
 								require("includes/residential.binder.php");
 								require("includes/commercial.binder.php");
 								require("includes/installation.binder.php");
