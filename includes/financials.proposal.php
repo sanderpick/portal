@@ -1,13 +1,25 @@
 <?php
 // build the financials
 require_once("analysis.classes.php");
+
+if($m->getRow("es_offices",$job->job_officeID)) {
+	$office_data = $m->lastData();
+} else {
+	$office_data[] = "";
+}
+$sys_rate_increase = $office_data->off_sys_rate_increase;
+$sys_rate_increase_pct = $sys_rate_increase;
+if ( $sys_rate_increase != 0 ) {
+	$sys_rate_increase = $sys_rate_increase / 100;
+}
+
 //$analysis = new SolarAnalysis(5.50,6992,0.0098,20369,0.066,0.12,30,10000,0,0,0.30,3876);
 $analysis = new SolarAnalysis(
 	$f->size, // system size
 	$f->production, // system production
 	0.0098, // system derate
 	$f->cus_after_credit, // system cost
-	0.066, // system rate increase
+	(float)$sys_rate_increase, // system rate increase
 	$zones[0]->zon_erate/100, // system utility price
 	30, // system term (years)
 	$job->job_kwh_load, // system energy usage
@@ -114,7 +126,7 @@ $analysis->finish();
 			<thead>
 				<tr>
 					<th align="left">Year</th>
-					<th align="right">Utility Rate</th>
+					<th align="right">Utility Rate<span class="super">4</span></th>
 					<th align="right">Electric Bill <br />WITHOUT Solar</th>
 					<th align="right">Electric Bill <br />WITH Solar</th>
 					<?php if($analysis->total_sorec_rev!=0) { ?><th align="right">SREC</th><?php } ?>
@@ -400,6 +412,8 @@ $analysis->finish();
 					2) &quot;Internal Rate of Return (IRR)&quot; is the rate of return (annual compounded) that the cash flows bring based upon the amount of capital invested upon installation. If you financed your system 100%, IRR does not apply since you did not invest your capital.
 					<br /><br />
 					3) &quot;tax-free IRR&quot;: Since the yield is based off of energy cost savings from Solar PV, the investment is inherently tax-free. For comparison purposes, this could be considered the post-tax return. Returns on other types of investments are often quoted as a pre-tax return. Therefore, in order to do an "apples to apples" comparison of your solar investment to other investment options, you will have to take into account your tax bracket percentage.
+					<br /><br />
+					4) &quot;Utility Rate&quot; is the estimated utility price for energy over the next 30 years. The value reflects an annual increase of <?php echo number_format( $sys_rate_increase_pct, 2 ); ?>%.
 					<br /><br />
 					&dagger; This figure includes an inverter replacement at year 15.
 				</td>
